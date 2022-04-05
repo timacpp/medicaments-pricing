@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 import re
 import csv
 
-def read_path(directory_name):
+def read_path():
     parser = argparse.ArgumentParser()
     parser.add_argument("dir", help="Name of the directory to save files")
     args = parser.parse_args()
@@ -45,7 +45,33 @@ def print_medicines(list_od_medicines):
     for med in list_od_medicines:
         print(med)
 
+def download_file_from_url(url, dest_folder, date, new_name):
+    if not os.path.exists(dest_folder):
+        os.makedirs(dest_folder)
 
+    previous_name = url.split('/')[-1]
+    file_path=os.path.join(dest_folder, new_name+'-'+date)
+    req = requests.get(url, stream=True)
+    if req.ok:
+        print("Saving {prev_name} to {new_name}".format(prev_name = previous_name,
+                                                        new_name = dest_folder +
+                                                                   "/" + new_name
+                                                                    + '-' + date))
+        with open(file_path, 'wb') as f:
+            for chunk in req.iter_content(chunk_size=1024 * 8):
+                if chunk:
+                    f.write(chunk)
+                    f.flush()
+                    os.fsync(f.fileno())
+    else:
+        print("Download failed: {name}".format(name = previous_name))
+
+def get_date(to_extract):
+    splitted = to_extract.split('-')
+    for ind in range(0, len(splitted)):
+        if splitted[ind][0].isnumeric():
+            if int(splitted[ind]) > 2000:
+              return splitted[ind - 2] + "-" + splitted[ind - 1] + "-" + splitted[ind]
 
 def open_medicines(list_of_medicines, folder): #, writer):
     count = 0
@@ -65,69 +91,14 @@ def open_medicines(list_of_medicines, folder): #, writer):
                 if re.search("\.xlsx", stringified) and re.search("cznik", stringified):
  #               if re.search("\.xlsx", stringified):
 #                    print(para.get_text())
+                    link_content = link.split('/')[-1]
+                    date = get_date(link_content)
+                    print(link_content)
+                    print(date)
                     print(para['href'])
+                    download_file_from_url('https://www.gov.pl' + para['href'],
+                                           folder, date, link_content.split('-')[0])
                     count += 1
-                    # if not noticed:
-                    #     title_list = title.split()[:2]
-                    #     noticed = True
-                    #     result_row[0] = title_list[0]
-                    #     result_row[1] = title_list[1]
-                    #     print(title_list)
-                    # #print(para.next_sibling.get_text())
-                    # next = para.find_next('p')
-                    # next_text = next.get_text()
-                    # if next_text != previous:
-                    #     result_row[2] += next_text + '\n'
-                    #     previous = next_text
-                    # print(next_text)
-
-            # if noticed:
-            #     for active in soup.find_all('dt'):
-            #         stringified_active = active.get_text()
-            #         #print(stringified_active)
-            #         if re.search("Substancje aktywne", stringified_active):
-            #             print(stringified_active)
-            #             next = active.find_next('div')
-            #             next_text = next.get_text()
-            #             splitted = next_text.split('  ')
-            #             #print(splitted)
-            #             res_splitted = [el for el in splitted if el != '' and el != '\n']
-            #             print(res_splitted)
-            #             res_string = " ".join(res_splitted)
-            #             print(res_string)
-            #             result_row.append(res_string)
-            #
-            #     # for indications in soup.find_all('button'):
-            #     #     stringified_button = indications.get_text()
-            #     #     print(stringified_button, " button")
-            #
-            #     for ind in soup.find_all('h3'):
-            #         stringified_ind = ind.get_text()
-            #         #print(stringified_ind, " h2")
-            #         res = []
-            #         if re.search("Wskazania", stringified_ind):
-            #             next = ind.find_next('p')
-            #             next_text = next.get_text()
-            #             result_row.append(next_text)
-            #             print(next_text)
-            #
-            #     for ind2 in soup.find_all('dt'):
-            #         stringified_ind2 = ind2.get_text()
-            #         #print(stringified_ind2, "ind2")
-            #         if re.search("Działanie", stringified_ind2):
-            #             next = ind2.find_next('div')
-            #             next_text = next.get_text()
-            #             splitted = next_text.split('  ')
-            #             # print(splitted)
-            #             res_splitted = [el for el in splitted if el != '' and el != '\n']
-            #             print(res_splitted)
-            #             res_string = " ".join(res_splitted)
-            #             print(res_string)
-            #             result_row.append(res_string)
-            #
-            #     writer.writerow(result_row)
-            #     print(result_row)
-            #     print("WRITTEN")
 
         except HTTPError as err:
             if err.code == 404:
@@ -136,25 +107,25 @@ def open_medicines(list_of_medicines, folder): #, writer):
                 raise
     return count
 
-def download_file_from_url(url, dest_folder, date, new_name):
-    if not os.path.exists(folder):
-        os.makedirs(folder)
-
-    previous_name = url.split('/')[-1]
-    file_path=os.path.join(dest_folder, new_name)
-    req = requests.get(url, stream=True)
-    if req.ok:
-        print("Saving {prev_name} to {new_name}".format(prev_name = previous_name,
-                                                        new_name = dest_folder +
-                                                                   "/" + new_name))
-        with open(file_path, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=1024 * 8):
-                if chunk:
-                    f.write(chunk)
-                    f.flush()
-                    os.fsync(f.fileno())
-    else:
-        print("Download failed: {name}".format(name = previous_name))
+# def download_file_from_url(url, dest_folder, date, new_name):
+#     if not os.path.exists(folder):
+#         os.makedirs(folder)
+#
+#     previous_name = url.split('/')[-1]
+#     file_path=os.path.join(dest_folder, new_name)
+#     req = requests.get(url, stream=True)
+#     if req.ok:
+#         print("Saving {prev_name} to {new_name}".format(prev_name = previous_name,
+#                                                         new_name = dest_folder +
+#                                                                    "/" + new_name))
+#         with open(file_path, 'wb') as f:
+#             for chunk in r.iter_content(chunk_size=1024 * 8):
+#                 if chunk:
+#                     f.write(chunk)
+#                     f.flush()
+#                     os.fsync(f.fileno())
+#     else:
+#         print("Download failed: {name}".format(name = previous_name))
 
 def find_pairs_links(soup):
     for link in soup.find_all('a'):
@@ -166,6 +137,7 @@ if __name__ == '__main__':
     #soup = fetch_url(url)
     #medicines = find_links(soup)
     #print_medicines(medicines)
+    folder_name = read_path()
     counter = 0
     with open("lekiPelne.csv", "w", newline='') as csfile:
 #        writer = csv.writer(csfile)
@@ -176,7 +148,7 @@ if __name__ == '__main__':
 #            find_pairs_links(soup)
             medicines = find_links(soup)
 #            print(medicines)
-            counter += open_medicines(medicines) #, writer)
+            counter += open_medicines(medicines, folder_name) #, writer)
    # print(response)
         print(counter)
 
