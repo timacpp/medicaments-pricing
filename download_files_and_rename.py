@@ -50,19 +50,24 @@ def download_file_from_url(url, dest_folder, date, new_name):
         os.makedirs(dest_folder)
 
     previous_name = url.split('/')[-1]
-    file_path=os.path.join(dest_folder, new_name+'-'+date)
-    req = requests.get(url, stream=True)
+    file_path=os.path.join(dest_folder, new_name + '-' + date + ".xlsx")
+    heads = {
+        "Content-Type": "text",
+        "Accept-Encoding": "gzip, deflate, br"
+    }
+    req = requests.get(url, stream=True, headers=heads)
     if req.ok:
         print("Saving {prev_name} to {new_name}".format(prev_name = previous_name,
                                                         new_name = dest_folder +
                                                                    "/" + new_name
                                                                     + '-' + date))
         with open(file_path, 'wb') as f:
-            for chunk in req.iter_content(chunk_size=1024 * 8):
-                if chunk:
-                    f.write(chunk)
-                    f.flush()
-                    os.fsync(f.fileno())
+            # for chunk in req.iter_content(chunk_size=1024 * 8):
+            #     if chunk:
+            #         f.write(chunk)
+            #         f.flush()
+            #         os.fsync(f.fileno())
+            f.write(req.content)
     else:
         print("Download failed: {name}".format(name = previous_name))
 
