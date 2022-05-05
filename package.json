@@ -1,0 +1,26 @@
+{
+  "name": "medicaments",
+  "version": "1.0.0",
+  "description": "Web application for comparing medicaments pricing.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EuphoricThinking/pIOwer_rangers.git"
+  },
+  "author": "Agata Momot, Michał Maszkowski, Jan Ossowski, Tymofii Vedmedenko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EuphoricThinking/pIOwer_rangers/issues"
+  },
+  "homepage": "https://github.com/EuphoricThinking/pIOwer_rangers#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  },
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
