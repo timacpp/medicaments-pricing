@@ -87,8 +87,8 @@ def open_medicines(list_of_medicines, folder):
                 if re.search("\.xlsx", stringified) and re.search("cznik", stringified):
                     link_content = link.split('/')[-1]
                     date = get_date(link_content)
-                    print(link_content)
-                    print(date + '\n')
+#                    print(link_content)
+ #                   print(date + '\n')
 #                    print(para['href'])
                     download_file_from_url('https://www.gov.pl' + para['href'],
                                            folder, date, link_content.split('-')[0])
@@ -115,14 +115,11 @@ if __name__ == '__main__':
             new_page = url + str(page)
             soup = fetch_url(new_page)
             medicines = find_links(soup)
-<<<<<<< HEAD:download_files_and_rename.py
 #            print(medicines)
             counter += open_medicines(medicines, folder_name) #, writer)
    # print(response)
-        print("Total number:", counter)
+            print("Total number:", counter)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
-=======
             counter += open_medicines(medicines, folder_name)
-        print(counter)
->>>>>>> 84e66134289eb131fb28c96f62b6b215d1d991b7:scripts/download_files_and_rename.py
+            print(counter)
