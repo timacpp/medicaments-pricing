@@ -1,9 +1,11 @@
 import pandas as pd
 
+FILE = 'obwieszczenie-1-lipca-2018'
+
 if __name__ == '__main__':
     # Create dictionary like {1: {'gtin': 5909990244713}, ...}
     data = pd.read_excel(
-        'doc.xlsx',
+        f'data/xlsx/{FILE}.xlsx',
         index_col=0,            # Use first column as indices
         header=1,               # Ignore first row
         usecols='A,E',          # Select LP and GTIN
