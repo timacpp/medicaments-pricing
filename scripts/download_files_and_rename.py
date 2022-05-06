@@ -5,7 +5,7 @@ import requests
 from urllib.error import HTTPError
 from bs4 import BeautifulSoup
 import re
-import csv
+
 
 def read_path():
     parser = argparse.ArgumentParser()
@@ -13,6 +13,7 @@ def read_path():
     args = parser.parse_args()
 
     return args.dir
+
 
 def fetch_url(homepage):
     html_file = urllib.request.urlopen(homepage)
@@ -34,10 +35,10 @@ def find_links(soup):
     return medicines
 
 
-
 def print_medicines(list_od_medicines):
     for med in list_od_medicines:
         print(med)
+
 
 def download_file_from_url(url, dest_folder, date, new_name):
     if not os.path.exists(dest_folder):
@@ -62,10 +63,13 @@ def download_file_from_url(url, dest_folder, date, new_name):
 
 def get_date(to_extract):
     splitted = to_extract.split('-')
+    to_return = ""
     for ind in range(0, len(splitted)):
         if splitted[ind][0].isnumeric():
             if int(splitted[ind]) > 2000:
-              return splitted[ind - 2] + "-" + splitted[ind - 1] + "-" + splitted[ind]
+                to_return += splitted[ind - 2] + "-" + splitted[ind - 1] + "-" + splitted[ind] + "__"
+
+    return to_return[:-2]
 
 def open_medicines(list_of_medicines, folder):
     count = 0
@@ -73,18 +77,11 @@ def open_medicines(list_of_medicines, folder):
         try :
             html_file = urllib.request.urlopen(link)
             soup = BeautifulSoup(html_file, 'html.parser')
-            title = soup.title.string
-            noticed = False
-            result_row = ["", "", "", link]
-            previous = ""
-            for para in soup.find_all("a", {"class":"file-download"}, href=True): #h3
+            for para in soup.find_all("a", {"class":"file-download"}, href=True):
                 stringified = para.get_text()
                 if re.search("\.xlsx", stringified) and re.search("cznik", stringified):
                     link_content = link.split('/')[-1]
                     date = get_date(link_content)
-                    print(link_content)
-                    print(date)
-                    print(para['href'])
                     download_file_from_url('https://www.gov.pl' + para['href'],
                                            folder, date, link_content.split('-')[0])
                     count += 1
@@ -111,4 +108,7 @@ if __name__ == '__main__':
             soup = fetch_url(new_page)
             medicines = find_links(soup)
             counter += open_medicines(medicines, folder_name)
-        print(counter)
+            print("Total number:", counter)
+
+            counter += open_medicines(medicines, folder_name)
+            print(counter)
