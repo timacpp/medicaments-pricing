@@ -1,5 +1,3 @@
-# http://leki.urpl.gov.pl/index.php?id=%27%%27
-
 import argparse
 import os.path
 import urllib.request
@@ -19,8 +17,6 @@ def read_path():
 def fetch_url(homepage):
     html_file = urllib.request.urlopen(homepage)
     soup = BeautifulSoup(html_file, 'html.parser')
-#    print(soup.prettify())
-
     return soup
 
 
@@ -28,11 +24,9 @@ def find_links(soup):
     medicines = []
 
     set_of_links = [link.get('href') for link in soup.find_all('a')]
-#    print(set_of_links)
     index = 0
 
     while set_of_links[index][0] != '?':
-#        print(set_of_links[index])
         if re.search("bwieszczenie", set_of_links[index]) is not None:
             medicines.append('https://www.gov.pl' + set_of_links[index])
         index += 1
@@ -62,11 +56,6 @@ def download_file_from_url(url, dest_folder, date, new_name):
                                                                    "/" + new_name
                                                                     + '-' + date))
         with open(file_path, 'wb') as f:
-            # for chunk in req.iter_content(chunk_size=1024 * 8):
-            #     if chunk:
-            #         f.write(chunk)
-            #         f.flush()
-            #         os.fsync(f.fileno())
             f.write(req.content)
     else:
         print("Download failed: {name}".format(name = previous_name))
@@ -83,24 +72,19 @@ def get_date(to_extract):
 
     return to_return[:-2]
 
-def open_medicines(list_of_medicines, folder): #, writer):
+def open_medicines(list_of_medicines, folder):
     count = 0
     for link in list_of_medicines:
-#        print(link)
         try :
             html_file = urllib.request.urlopen(link)
             soup = BeautifulSoup(html_file, 'html.parser')
-#            print(soup.prettify())
             title = soup.title.string
             noticed = False
             result_row = ["", "", "", link]
             previous = ""
             for para in soup.find_all("a", {"class":"file-download"}, href=True): #h3
-#                print(para.get_text())
                 stringified = para.get_text()
                 if re.search("\.xlsx", stringified) and re.search("cznik", stringified):
- #               if re.search("\.xlsx", stringified):
-#                    print(para.get_text())
                     link_content = link.split('/')[-1]
                     date = get_date(link_content)
                     print(link_content)
@@ -117,49 +101,28 @@ def open_medicines(list_of_medicines, folder): #, writer):
                 raise
     return count
 
-# def download_file_from_url(url, dest_folder, date, new_name):
-#     if not os.path.exists(folder):
-#         os.makedirs(folder)
-#
-#     previous_name = url.split('/')[-1]
-#     file_path=os.path.join(dest_folder, new_name)
-#     req = requests.get(url, stream=True)
-#     if req.ok:
-#         print("Saving {prev_name} to {new_name}".format(prev_name = previous_name,
-#                                                         new_name = dest_folder +
-#                                                                    "/" + new_name))
-#         with open(file_path, 'wb') as f:
-#             for chunk in r.iter_content(chunk_size=1024 * 8):
-#                 if chunk:
-#                     f.write(chunk)
-#                     f.flush()
-#                     os.fsync(f.fileno())
-#     else:
-#         print("Download failed: {name}".format(name = previous_name))
-
 def find_pairs_links(soup):
     for link in soup.find_all('a'):
         title = link.get('href')
         print(title)
 
 if __name__ == '__main__':
-    url = 'https://www.gov.pl/web/zdrowie/obwieszczenia-ministra-zdrowia-lista-lekow-refundowanych?page=' #1
-    #soup = fetch_url(url)
-    #medicines = find_links(soup)
-    #print_medicines(medicines)
+    url = 'https://www.gov.pl/web/zdrowie/obwieszczenia-ministra-zdrowia-lista-lekow-refundowanych?page='
     folder_name = read_path()
     counter = 0
     with open("lekiPelne.csv", "w", newline='') as csfile:
-#        writer = csv.writer(csfile)
-#        writer.writerow(["Polska nazwa", "Angielska nazwa", "Interakcje", "Strona",  "Substancja aktywna", "Wskazania", "Działanie"])
         for page in range (1, 4):
             new_page = url + str(page)
             soup = fetch_url(new_page)
-#            find_pairs_links(soup)
             medicines = find_links(soup)
+<<<<<<< HEAD:download_files_and_rename.py
 #            print(medicines)
             counter += open_medicines(medicines, folder_name) #, writer)
    # print(response)
         print("Total number:", counter)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
+=======
+            counter += open_medicines(medicines, folder_name)
+        print(counter)
+>>>>>>> 84e66134289eb131fb28c96f62b6b215d1d991b7:scripts/download_files_and_rename.py
