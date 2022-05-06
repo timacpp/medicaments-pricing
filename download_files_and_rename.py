@@ -73,10 +73,15 @@ def download_file_from_url(url, dest_folder, date, new_name):
 
 def get_date(to_extract):
     splitted = to_extract.split('-')
+#    counter = 0
+    to_return = ""
     for ind in range(0, len(splitted)):
         if splitted[ind][0].isnumeric():
             if int(splitted[ind]) > 2000:
-              return splitted[ind - 2] + "-" + splitted[ind - 1] + "-" + splitted[ind]
+#                return splitted[ind - 2] + "-" + splitted[ind - 1] + "-" + splitted[ind]
+                to_return += splitted[ind - 2] + "-" + splitted[ind - 1] + "-" + splitted[ind] + "__"
+
+    return to_return[:-2]
 
 def open_medicines(list_of_medicines, folder): #, writer):
     count = 0
@@ -99,8 +104,8 @@ def open_medicines(list_of_medicines, folder): #, writer):
                     link_content = link.split('/')[-1]
                     date = get_date(link_content)
                     print(link_content)
-                    print(date)
-                    print(para['href'])
+                    print(date + '\n')
+#                    print(para['href'])
                     download_file_from_url('https://www.gov.pl' + para['href'],
                                            folder, date, link_content.split('-')[0])
                     count += 1
@@ -155,6 +160,6 @@ if __name__ == '__main__':
 #            print(medicines)
             counter += open_medicines(medicines, folder_name) #, writer)
    # print(response)
-        print(counter)
+        print("Total number:", counter)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
