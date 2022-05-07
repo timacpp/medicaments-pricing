@@ -73,7 +73,6 @@ def extract_data(excel_file):
     substances, prices, medicine = [], [], []
     unique_substances, unique_prices, unique_medicine = set(), set(), set()
 
-    a = set()
     for _, dataset in frame.items():
         for substance, name, content, price in dataset.to_records():
             a.add(substance)
@@ -93,8 +92,7 @@ def extract_data(excel_file):
             if price_record not in unique_prices:
                 prices.append(price_record)
                 unique_prices.add(price_record)
-
-    assert len(substances) == len(a)
+    
     return flat_enumerate(medicine), prices, flat_enumerate(substances)
 
 
