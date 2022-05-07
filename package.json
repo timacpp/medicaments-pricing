@@ -2,10 +2,10 @@
   "name": "medicaments",
   "version": "1.0.0",
   "description": "Web application for comparing medicaments pricing.",
-  "main": "app.js",
+  "main": "app/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "nodemon app/app.js"
   },
   "repository": {
     "type": "git",
