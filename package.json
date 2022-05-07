@@ -5,7 +5,8 @@
   "main": "app/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app/app.js"
+    "start": "nodemon app/app.js",
+    "init_db": "node app/database/initialize.js"
   },
   "repository": {
     "type": "git",
