@@ -48,10 +48,10 @@ def date_of_validity(excel_file):
     day, month, year = excel_file.split('-')[1:]
     year = year.partition('.')[0]
 
-    month_numeric = POLISH_MONTHS.get(month)
+    month_numeric = str(POLISH_MONTHS.get(month)).rjust(2, '0')
     assert month_numeric is not None
 
-    return f'{day}-{month_numeric}-{year}'
+    return f'{year}-{month_numeric}-0{day}'
 
 
 def flat_enumerate(container, start):
