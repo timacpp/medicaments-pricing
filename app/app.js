@@ -1,5 +1,8 @@
-const express = require('express')
-const connection = require('./database/connection')
+const express = require('express');
+const req = require('express/lib/request');
+const connection = require('./database/connection');
+
+const bp = require('body-parser');
 
 const port = 8080;
 const app = express();
@@ -8,6 +11,11 @@ const db = connection.connection
 app.set('view engine', 'pug');
 app.set('views', 'views');
 app.use(express.static('static'));
+
+app.use(bp.json());
+app.use(bp.urlencoded({ extended: true }));
+
+//app.use(express.bodyParser());
 
 
 app.listen(port, () => {
@@ -60,6 +68,13 @@ app.get('/', (req, res) => {
 
 });
 
+
+app.post("/checkMedicine" , (request, response) => {
+    console.log(request.body);
+    response.render('check.pug',{
+        skill: request.body.dropDown
+    });
+});
 // app.get('/', (req, res) => {
 //     const getSubstances = 'SELECT nazwa FROM Substancja';
 
