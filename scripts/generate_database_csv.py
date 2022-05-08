@@ -54,46 +54,48 @@ def date_of_validity(excel_file):
     return f'{day}-{month_numeric}-{year}'
 
 
-def flat_enumerate(container):
+def flat_enumerate(container, start):
     if not container:
         return []
+
+    enumerated = enumerate(container, start=start)
+
     if type(container[0]) != tuple:
-        return enumerate(container)
-    return [(idx, *data) for idx, data in enumerate(container)]
+        return enumerated
+    return [(idx, *data) for idx, data in enumerated]
 
 
 def to_cents(price):
     return int(price.replace(',', ''))
 
 
-def extract_data(excel_file):
+def extract_data(excel_file, sub_ids, med_ids, price_set):
     frame = get_dataframe(excel_file)
     date = date_of_validity(excel_file)
 
-    substances, prices, medicine = [], [], []
-    unique_substances, unique_prices, unique_medicine = set(), set(), set()
+    min_med_id, min_sub_id = len(med_ids), len(sub_ids)
+
+    substances, medicine, prices = [], [], []
 
     for _, dataset in frame.items():
         for substance, name, content, price in dataset.to_records():
-            a.add(substance)
-
-            if substance not in unique_substances:
+            if substance not in sub_ids:
                 substances.append(substance)
-                unique_substances.add(substance)
+                sub_ids[substance] = len(sub_ids)
 
-            substance_id = substances.index(substance)
+            substance_id = sub_ids[substance]
             medicine_record = (substance_id, name, content)
-            if medicine_record not in unique_medicine:
+            if medicine_record not in med_ids:
                 medicine.append(medicine_record)
-                unique_medicine.add(medicine_record)
+                med_ids[medicine_record] = len(med_ids)
 
-            medicine_id = medicine.index((substance_id, name, content))
+            medicine_id = med_ids[(substance_id, name, content)]
             price_record = (medicine_id, to_cents(price), date)
-            if price_record not in unique_prices:
+            if price_record not in price_set:
                 prices.append(price_record)
-                unique_prices.add(price_record)
-    
-    return flat_enumerate(medicine), prices, flat_enumerate(substances)
+                price_set.add(price_record)
+
+    return flat_enumerate(medicine, min_med_id), prices, flat_enumerate(substances, min_sub_id)
 
 
 def csv_writer(file, header):
@@ -106,13 +108,14 @@ if __name__ == '__main__':
     with open_csv('lek') as med_file:
         with open_csv('cena') as price_file:
             with open_csv('substancja') as substance_file:
-                medicine = csv_writer(med_file, ['id, substancja', 'nazwa', 'zawartosc'])
-                prices = csv_writer(price_file, ['lek', 'wartosc', 'dzien'])
-                substances = csv_writer(substance_file, ['id, nazwa'])
+                medicine_writer = csv_writer(med_file, ['id', 'substancja', 'nazwa', 'zawartosc'])
+                prices_writer = csv_writer(price_file, ['lek', 'wartosc', 'dzien'])
+                substances_writer = csv_writer(substance_file, ['id', 'nazwa'])
+                writers = [medicine_writer, prices_writer, substances_writer]
 
-                writers = [medicine, prices, substances]
+                substance_ids, medicine_ids, unique_prices = {}, {}, set()
 
                 for filename in os.listdir(EXCEL_FOLDER):
-                    data = extract_data(filename)
+                    data = extract_data(filename, substance_ids, medicine_ids, unique_prices)
                     for writer, records in zip(writers, data):
                         writer.writerows(records)
