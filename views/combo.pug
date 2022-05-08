@@ -5,5 +5,6 @@ div
         label(for='skillOpt') Substancja 
         select(name='dropDown', id='')
             each skill in Substancja
-                option=skill
+                option=skill[0] 
+                value=skill[1] 
             input(type='submit', value='Submit')

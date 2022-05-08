@@ -53,7 +53,7 @@ app.get('/', (req, res) => {
         // });
         const newArr = [];
         result.forEach(element => {
-            newArr.push(element['nazwa']);
+            newArr.push([element['nazwa'], element['id']]);
         });  
         res.render('combo.pug', {Substancja: newArr});
     });
