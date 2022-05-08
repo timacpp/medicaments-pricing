@@ -2,7 +2,7 @@ require('dotenv').config();
 const mysql = require('mysql');
 const csvtojson = require('csvtojson');
 
-const initTimeout = 1000;
+const initTimeout = 10 * 60000; // 10 minutes
 
 const tables = [
     {
@@ -55,7 +55,6 @@ connection.connect((err) => {
         console.error('Initialization: Failed to connect MySQL.');
         throw err;
     }
-    console.log('Initialization: MySQL connected successfully.');
 });
 
 connection.query('CREATE DATABASE MIMED', (err, result) => {
@@ -63,7 +62,6 @@ connection.query('CREATE DATABASE MIMED', (err, result) => {
         console.error('Failed to create database.');
         throw err;
     }
-    console.log('Database created successfully.');
 });
 
 connection.changeUser({database : 'MIMED'}, (err) => {
@@ -71,44 +69,36 @@ connection.changeUser({database : 'MIMED'}, (err) => {
         console.error('Failed to change database.');
         throw err;
     }
-    console.log('Database changed successfully.');
-})
+});
 
-tables.forEach(table => {
-    connection.query(table.sql, (err) => {
+tables.forEach(async (table) => {
+    await connection.query(table.sql, (err) => {
         if (err) {
-            console.log(`Failed to create table ${table.name}`);
+            console.log(`Failed to create table ${table.name}.`);
             throw err;
         }
-    
-        console.log(`Table ${table.name} created successfully.`);
-    })
-})
+        console.log(`Table ${table.name} created successfully.`)
+    });
+});
 
-let fillPromise = new Promise((resolve) => {
-    tables.forEach(table => {
-        console.log(`Initializing table ${table.name}`);
-        csvtojson().fromFile(table.file).then(source => {
-            source.forEach(record => {
-                const items = Object.values(record);
-                const params = '?, '.repeat(table.rows - 1) + '?'
+tables.forEach(table => {
+    console.log(`Filling table ${table.name}.`);
+    csvtojson().fromFile(table.file).then(source => {
+        source.forEach(record => {
+            const items = Object.values(record);
+            const params = '?, '.repeat(table.rows - 1) + '?'
+            const sql = `INSERT INTO ${table.name} values(${params})`;
 
-                const sql = `INSERT INTO ${table.name} values(${params})`;
-                connection.query(sql, items, (err) => {
-                    if (err) {
-                        console.log(`Failed to insert (${items}) into ${table.name}`);
-                        throw err;
-                    }
-                });
+            connection.query(sql, items, (err) => {
+                if (err) {
+                    console.log(`Failed to insert (${items}) into ${table.name}`);
+                    throw err;
+                }
             });
         });
     });
-
-    console.log('All tables are initialized successfully');
 });
 
-fillPromise.then(() => {
-    setTimeout(() => {
-        console.log('Press Ctrl+C to exit.');
-    }, initTimeout);
-});
+setTimeout(() => {
+    console.log('Press Ctrl+C to exit.');
+}, initTimeout);
