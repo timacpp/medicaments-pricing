@@ -74,8 +74,8 @@ def extract_data(excel_file, sub_ids, med_ids, price_set):
     date = date_of_validity(excel_file)
 
     min_med_id, min_sub_id = len(med_ids), len(sub_ids)
-
     substances, medicine, prices = [], [], []
+    first_price = {}
 
     for _, dataset in frame.items():
         for substance, name, content, price in dataset.to_records():
@@ -89,11 +89,15 @@ def extract_data(excel_file, sub_ids, med_ids, price_set):
                 medicine.append(medicine_record)
                 med_ids[medicine_record] = len(med_ids)
 
+            cents = to_cents(price)
             medicine_id = med_ids[(substance_id, name, content)]
-            price_record = (medicine_id, to_cents(price), date)
+            price_record = (medicine_id, cents, date)
+
             if price_record not in price_set:
-                prices.append(price_record)
-                price_set.add(price_record)
+                if (medicine_id, date) not in first_price:
+                    first_price[(medicine_id, date)] = cents
+                    prices.append(price_record)
+                    price_set.add(price_record)
 
     return flat_enumerate(medicine, min_med_id), prices, flat_enumerate(substances, min_sub_id)
 
