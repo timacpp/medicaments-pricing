@@ -1,15 +1,55 @@
 require('dotenv').config();
 const mysql = require('mysql');
-const timeout = 2000;
+const csvtojson = require('csvtojson');
+
+const initTimeout = 2000;
+const tables = [
+    {
+        name: 'Substancja',
+        file: 'data/csv/substancja.csv',
+        rows: 2,
+        sql: `
+        CREATE TABLE Substancja (
+            id INT NOT NULL PRIMARY KEY,
+            nazwa TEXT NOT NULL
+        )`
+    },
+    {
+        name: 'Lek',
+        file: 'data/csv/lek.csv',
+        rows: 4,
+        sql: `
+        CREATE TABLE Lek (
+            id INT NOT NULL PRIMARY KEY,
+            substancja INT NOT NULL ,
+            nazwa TEXT NOT NULL,
+            zawartosc TEXT NOT NULL,
+            FOREIGN KEY (substancja) REFERENCES Substancja(id)
+        )`
+    },
+    {
+        name: 'Cena',
+        file: 'data/csv/cena.csv',
+        rows: 3,
+        sql: `
+        CREATE TABLE Cena (
+            lek INT NOT NULL,
+            wartosc INT NOT NULL,
+            dzien DATE NOT NULL,
+            PRIMARY KEY(dzien, lek),
+            FOREIGN KEY(lek) REFERENCES Lek(id)
+        )`
+    }
+]
 
 /* We cannot use connection.js, it assumes database exists */
-const db = mysql.createConnection({
+const connection = mysql.createConnection({
     host: process.env.DB_SERVER,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD
 });
 
-db.connect((err) => {
+connection.connect((err) => {
     if (err) {
         console.error('Initialization: Failed to connect MySQL.');
         throw err;
@@ -17,7 +57,7 @@ db.connect((err) => {
     console.log('Initialization: MySQL connected successfully.');
 });
 
-db.query('CREATE DATABASE MIMED', (err, result) => {
+connection.query('CREATE DATABASE MIMED', (err, result) => {
     if (err) {
         console.error('Failed to create database.');
         throw err;
@@ -25,7 +65,7 @@ db.query('CREATE DATABASE MIMED', (err, result) => {
     console.log('Database created successfully.');
 });
 
-db.changeUser({database : 'MIMED'}, (err) => {
+connection.changeUser({database : 'MIMED'}, (err) => {
     if (err) {
         console.error('Failed to change database.');
         throw err;
@@ -33,43 +73,34 @@ db.changeUser({database : 'MIMED'}, (err) => {
     console.log('Database changed successfully.');
 })
 
-function tableCallback(name, err) {
-    if (err) {
-        console.log(`Failed to create table [${name}]`);
-        throw err;
-    }
+tables.forEach(table => {
+    connection.query(table.sql, (err) => {
+        if (err) {
+            console.log(`Failed to create table ${table.name}`);
+            throw err;
+        }
+    
+        console.log(`Table ${table.name} created successfully.`);
+    })
+})
 
-    console.log(`Table [${name}] created successfully.`);
-};
+tables.forEach(table => {
+    csvtojson().fromFile(table.file).then(source => {
+        source.forEach(record => {
+            const items = Object.values(record);
+            const params = '?, '.repeat(table.rows - 1) + '?'
 
-db.query(
-    `CREATE TABLE Substancja (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        nazwa TEXT NOT NULL
-    )`
-, (err) => tableCallback('Substancja', err));
-
-db.query(
-    `CREATE TABLE Lek (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        substancja INT NOT NULL ,
-        nazwa TEXT NOT NULL,
-        zawartosc TEXT NOT NULL,
-        FOREIGN KEY (substancja) REFERENCES Substancja(id)
-    )`
-, (err) => tableCallback('Lek', err));
-
-db.query(
-    `CREATE TABLE Cena (
-        wartosc INT NOT NULL,
-        dzien DATE NOT NULL,
-        lek INT NOT NULL,
-        PRIMARY KEY(dzien, lek),
-        FOREIGN KEY(lek) REFERENCES Lek(id)
-    )`
-, (err) => tableCallback('Cena', err));
-
+            const sql = `INSERT INTO ${table.name} values(${params})`;
+            connection.query(sql, items, (err) => {
+                if (err) {
+                    console.log(`Failed to insert (${items}) into ${table.name}`);
+                    throw err;
+                }
+            });
+        });
+    });
+});
 
 setTimeout(() => {
     console.log('Press Ctrl+C to exit.');
-}, timeout);
+}, initTimeout);
