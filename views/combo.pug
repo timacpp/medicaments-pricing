@@ -1,0 +1,9 @@
+doctype html
+h3 Choose Your Skill
+div
+    form(action='/SkillOpted' method="post")
+        label(for='skillOpt') Substancja 
+        select(name='dropDown', id='')
+            each skill in Substancja
+                option=skill
+            input(type='submit', value='Submit')

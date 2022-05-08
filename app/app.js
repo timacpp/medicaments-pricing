@@ -9,31 +9,67 @@ app.set('view engine', 'pug');
 app.set('views', 'views');
 app.use(express.static('static'));
 
+
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });
 
-app.get('/', (req, res) => {
-    const substance = 'Acarbosum';
-    const sql = `
-    SELECT lek.nazwa
-        FROM Lek lek
-        LEFT JOIN Substancja sub
-        ON sub.nazwa = ?
-        LIMIT 10
-    `;
+// app.get('/', (req, res) => {
+//     const substance = 'Acarbosum';
+//     const sql = `
+//     SELECT lek.nazwa
+//         FROM Lek lek
+//         LEFT JOIN Substancja sub
+//         ON sub.nazwa = ?
+//         LIMIT 10
+//     `;
 
-    db.query(sql, substance, (err, result) => {
+//     db.query(sql, substance, (err, result) => {
+//         if (err) {
+//             console.error('Query failed.');
+//             throw err;
+//         }
+
+//         names = ''
+//         result.forEach(record => {
+//             names += record['nazwa'] + ' ';
+//         });
+
+//         res.render('example.pug', {medicine: names});
+//     });
+// });
+
+app.get('/', (req, res) => {
+    const getSubstances = 'SELECT nazwa, id FROM Substancja';
+    db.query(getSubstances, (err, result) => {
         if (err) {
-            console.error('Query failed.');
+            console.error('Now you fucked up.');
             throw err;
         }
 
-        names = ''
-        result.forEach(record => {
-            names += record['nazwa'] + ' ';
-        });
-
-        res.render('example.pug', {medicine: names});
+        // names = ''
+        // result.forEach(record => {
+        //     names += record['nazwa'] + ' ';
+        // });
+        const newArr = [];
+        result.forEach(element => {
+            newArr.push(element['nazwa']);
+        });  
+        res.render('combo.pug', {Substancja: newArr});
     });
+
 });
+
+// app.get('/', (req, res) => {
+//     const getSubstances = 'SELECT nazwa FROM Substancja';
+
+//     db.query(getSubstances, (err, result) => {
+//         if (err) {
+//             console.error('Query failed.');
+//             throw err;
+//         }
+
+
+//         res.render('example.pug', {medicine: result});
+//     });
+// });
