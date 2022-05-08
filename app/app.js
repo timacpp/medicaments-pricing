@@ -70,10 +70,15 @@ app.get('/', (req, res) => {
 
 
 app.post("/checkMedicine" , (request, response) => {
-    console.log(request.body);
+    console.log(request.body.dropDown);
     response.render('check.pug',{
         skill: request.body.dropDown
     });
+    //  var selected = document.getElementById('dropDown');
+    //  var selId = selected.options[selected.selectedIndex].value;
+    //  response.render('check.pug', {
+    //      skill: selId
+    //  })
 });
 // app.get('/', (req, res) => {
 //     const getSubstances = 'SELECT nazwa FROM Substancja';
