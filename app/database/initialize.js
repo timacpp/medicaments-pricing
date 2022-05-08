@@ -2,7 +2,8 @@ require('dotenv').config();
 const mysql = require('mysql');
 const csvtojson = require('csvtojson');
 
-const initTimeout = 2000;
+const initTimeout = 1000;
+
 const tables = [
     {
         name: 'Substancja',
@@ -84,23 +85,30 @@ tables.forEach(table => {
     })
 })
 
-tables.forEach(table => {
-    csvtojson().fromFile(table.file).then(source => {
-        source.forEach(record => {
-            const items = Object.values(record);
-            const params = '?, '.repeat(table.rows - 1) + '?'
+let fillPromise = new Promise((resolve) => {
+    tables.forEach(table => {
+        console.log(`Initializing table ${table.name}`);
+        csvtojson().fromFile(table.file).then(source => {
+            source.forEach(record => {
+                const items = Object.values(record);
+                const params = '?, '.repeat(table.rows - 1) + '?'
 
-            const sql = `INSERT INTO ${table.name} values(${params})`;
-            connection.query(sql, items, (err) => {
-                if (err) {
-                    console.log(`Failed to insert (${items}) into ${table.name}`);
-                    throw err;
-                }
+                const sql = `INSERT INTO ${table.name} values(${params})`;
+                connection.query(sql, items, (err) => {
+                    if (err) {
+                        console.log(`Failed to insert (${items}) into ${table.name}`);
+                        throw err;
+                    }
+                });
             });
         });
     });
+
+    console.log('All tables are initialized successfully');
 });
 
-setTimeout(() => {
-    console.log('Press Ctrl+C to exit.');
-}, initTimeout);
+fillPromise.then(() => {
+    setTimeout(() => {
+        console.log('Press Ctrl+C to exit.');
+    }, initTimeout);
+});
