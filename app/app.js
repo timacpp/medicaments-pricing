@@ -19,8 +19,13 @@ app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });
 
-app.get('/substance', (request, ressponse) => {
-    const getSubstances = 'SELECT nazwa, id FROM Substancja ORDER BY nazwa-';
+app.use((request, response, next) => {
+    console.log(`Request recieved at ${new Date().toISOString()}`);
+    next();
+});
+
+app.get('/substance', (request, response) => {
+    const getSubstances = 'SELECT nazwa, id FROM Substancja ORDER BY nazwa';
 
     db.query(getSubstances, (err, result) => {
         if (err) {
@@ -32,7 +37,7 @@ app.get('/substance', (request, ressponse) => {
         result.forEach(element => {
             substances.push([element['nazwa'], element['id']]);
         });
-        ressponse.render('combo.pug', {substances: substances});
+        response.render('combo.pug', {substances: substances});
     });
 });
 
@@ -60,11 +65,12 @@ app.post('/medicine' , (request, response) => {
 });
 
 app.post('/prices', (request, response) => {
-    const medicineIds = request.body.showGraph;
+    const medicineIds = request.body.graph;
     const commaIds = medicineIds.map(element => element).join(',');
     const getPrices = `SELECT lek.nazwa, lek.zawartosc, cena.dzien, cena.wartosc 
-                        FROM Lek lek JOIN Cena cena ON lek.id = cena.lek
-                        WHERE lek.id IN ( ${commaIds} )`;
+                         FROM Lek lek JOIN Cena cena ON lek.id = cena.lek
+                         WHERE lek.id IN ( ${commaIds} )
+                       ORDER BY cena.dzien`;
 
     db.query(getPrices, (err, result) => {
         if (err) {
