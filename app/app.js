@@ -41,7 +41,8 @@ app.post('/medicine' , (request, response) => {
     const getMedicine = `SELECT lek.nazwa, lek.zawartosc, lek.id
                             FROM Lek lek
                             JOIN Substancja sub
-                            ON lek.substancja = sub.id WHERE sub.id = ?`;
+                            ON lek.substancja = sub.id WHERE sub.id = ?
+                        ORDER BY lek.nazwa, lek.zawartosc`;
     
     db.query(getMedicine, substanceId, (err, result) => {
         if (err) {
