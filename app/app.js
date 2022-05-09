@@ -22,31 +22,6 @@ app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });
 
-// app.get('/', (req, res) => {
-//     const substance = 'Acarbosum';
-//     const sql = `
-//     SELECT lek.nazwa
-//         FROM Lek lek
-//         LEFT JOIN Substancja sub
-//         ON sub.nazwa = ?
-//         LIMIT 10
-//     `;
-
-//     db.query(sql, substance, (err, result) => {
-//         if (err) {
-//             console.error('Query failed.');
-//             throw err;
-//         }
-
-//         names = ''
-//         result.forEach(record => {
-//             names += record['nazwa'] + ' ';
-//         });
-
-//         res.render('example.pug', {medicine: names});
-//     });
-// });
-
 app.get('/', (req, res) => {
     const getSubstances = 'SELECT nazwa, id FROM Substancja';
     db.query(getSubstances, (err, result) => {
