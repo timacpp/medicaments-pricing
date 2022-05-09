@@ -1,0 +1,10 @@
+doctype html
+h3 Wybierz substancję aktywną
+div
+    form(action='/checkMedicine' method="post")
+        label(for='skillOpt') Substancja 
+        select(name='dropDown', id='')
+            each skill in Substancja
+                option(value=skill[1]) #{skill[0]} 
+                //- value=skill[1] 
+            input(type='submit', value='Submit')
