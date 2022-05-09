@@ -66,7 +66,7 @@ app.post('/prices', (request, response) => {
     const medicineIds = request.body.checkBox;
     const commaIds = medicineIds instanceof Array ?
                      medicineIds.map(element => element).join(',') : medicineIds;
-    const getPrices = `SELECT lek.nazwa, lek.zawartosc, cena.dzien, cena.wartosc 
+    const getPrices = `SELECT lek.nazwa, lek.zawartosc, DATE_FORMAT(cena.dzien,'%m/%y') AS dzien, cena.wartosc 
                          FROM Lek lek JOIN Cena cena ON lek.id = cena.lek
                          WHERE lek.id IN ( ${commaIds} )
                        ORDER BY cena.dzien`;
@@ -78,7 +78,6 @@ app.post('/prices', (request, response) => {
         }
 
         const prices = [];
-        // record['dzien'].toString().slice(0, 15) - use to parse date format, remove if not needed
         result.forEach(record => {
             prices.push([`${record['nazwa']} ${record['zawartosc']}`, record['dzien'], record['wartosc']]);
         });
