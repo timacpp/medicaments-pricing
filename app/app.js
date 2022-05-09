@@ -101,13 +101,25 @@ app.post("/checkMedicine" , (request, response) => {
 app.post("/showGraph", (request, response) => {
     console.log(request.body);
     console.log("arr" + Array.from(request.body));
-    const idMedicine = []
-    Array.from(request.body).forEach(element => {
-        idMedicine.push(element.value)
-    });
+    const idMedicine = request.body.showGraph;
+    // Array.from(request.body).forEach(element => {
+    //     idMedicine.push(element[''])
+    // });
     console.log(idMedicine);
 
-    response.render('graph.pug', request.body.showGraph);
+    let lor_in_list = idMedicine.map(function (a) { return a; }).join(",");
+    let sql_query = 'SELECT nazwa, zawartosc FROM Lek WHERE id IN (' + lor_in_list + ')';
+    console.log('query: ' + sql_query);
+
+    db.query(sql_query, (err, result) => {
+        if (err) {
+            console.error('Now you fucked up with checkbox id.');
+            throw err;
+        }
+
+        console.log(result);
+        response.render('graph.pug', request.body.showGraph);
+    })
 //    response
 });
 // app.get('/', (req, res) => {
