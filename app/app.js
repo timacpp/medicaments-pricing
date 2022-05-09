@@ -93,13 +93,20 @@ app.post("/checkMedicine" , (request, response) => {
             newArr.push([record['nazwa'] + ' ' + record['zawartosc'],
                         record['id']]);
         });
-//        console.log(newArr);
+        console.log(newArr);
         response.render('check.pug', {Leki: newArr});
     });
 });
 
 app.post("/showGraph", (request, response) => {
-    console.log(request.body.showGraph);
+    console.log(request.body);
+    console.log("arr" + Array.from(request.body));
+    const idMedicine = []
+    Array.from(request.body).forEach(element => {
+        idMedicine.push(element.value)
+    });
+    console.log(idMedicine);
+
     response.render('graph.pug', request.body.showGraph);
 //    response
 });
