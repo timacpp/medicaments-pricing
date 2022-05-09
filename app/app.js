@@ -108,7 +108,9 @@ app.post("/showGraph", (request, response) => {
     console.log(idMedicine);
 
     let lor_in_list = idMedicine.map(function (a) { return a; }).join(",");
-    let sql_query = 'SELECT nazwa, zawartosc FROM Lek WHERE id IN (' + lor_in_list + ')';
+    let sql_query = `SELECT lek.nazwa, lek.zawartosc, cena.dzien, cena.wartosc 
+                    FROM Lek lek JOIN Cena cena ON lek.id = cena.lek
+                    WHERE lek.id IN ( `+ lor_in_list + `)`;
     console.log('query: ' + sql_query);
 
     db.query(sql_query, (err, result) => {
