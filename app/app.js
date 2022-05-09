@@ -2,6 +2,7 @@ const express = require('express');
 const req = require('express/lib/request');
 const connection = require('./database/connection');
 const bp = require('body-parser');
+const res = require('express/lib/response');
 
 const port = 8080;
 const app = express();
@@ -18,7 +19,7 @@ app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });
 
-app.get('/substance', (req, res) => {
+app.get('/substance', (request, ressponse) => {
     const getSubstances = 'SELECT nazwa, id FROM Substancja';
 
     db.query(getSubstances, (err, result) => {
@@ -31,7 +32,7 @@ app.get('/substance', (req, res) => {
         result.forEach(element => {
             substances.push([element['nazwa'], element['id']]);
         });
-        res.render('combo.pug', {substances: substances});
+        ressponse.render('combo.pug', {substances: substances});
     });
 });
 
@@ -81,3 +82,8 @@ app.post('/prices', (request, response) => {
 
 //    TODO: response
 });
+
+app.get('*', (request, response) => {
+    console.log('The paths does not exist, redirecting to main page.');
+    response.redirect('/substance');
+})
