@@ -1,7 +1,6 @@
 const express = require('express');
 const req = require('express/lib/request');
 const connection = require('./database/connection');
-
 const bp = require('body-parser');
 
 const port = 8080;
@@ -15,108 +14,70 @@ app.use(express.static('static'));
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 
-//app.use(express.bodyParser());
-
-
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });
 
-app.get('/', (req, res) => {
+app.get('/substance', (req, res) => {
     const getSubstances = 'SELECT nazwa, id FROM Substancja';
+
     db.query(getSubstances, (err, result) => {
         if (err) {
-            console.error('Now you fucked up.');
+            console.error('Substance query failed.');
             throw err;
         }
 
-        // names = ''
-        // result.forEach(record => {
-        //     names += record['nazwa'] + ' ';
-        // });
-        const newArr = [];
+        const substances = [];
         result.forEach(element => {
-            newArr.push([element['nazwa'], element['id']]);
-        });  
-        res.render('combo.pug', {Substancja: newArr});
+            substances.push([element['nazwa'], element['id']]);
+        });
+        res.render('combo.pug', {substances: substances});
     });
-
 });
 
-
-app.post("/checkMedicine" , (request, response) => {
-    console.log(request.body.dropDown);
-
+app.post('/medicine' , (request, response) => {
     const substanceId = parseInt(request.body.dropDown);
-    console.log(typeof substanceId);
-    const getMedicines = `SELECT lek.nazwa, lek.zawartosc, lek.id
-            FROM Lek lek
-            JOIN Substancja sub
-            ON lek.substancja = sub.id WHERE sub.id = ?`;
-
-    // response.render('check.pug',{
-    //     skill: request.body.dropDown
-    // });
-    db.query(getMedicines, substanceId, (err, result) => {
+    const getMedicine = `SELECT lek.nazwa, lek.zawartosc, lek.id
+                            FROM Lek lek
+                            JOIN Substancja sub
+                            ON lek.substancja = sub.id WHERE sub.id = ?`;
+    
+    db.query(getMedicine, substanceId, (err, result) => {
         if (err) {
-            console.error('Now you fucked up with substance id.');
+            console.error('Medicine query failed.');
             throw err;
         }
 
-        var newArr = []
+        const medicine = [];
         result.forEach(record => {
-            newArr.push([record['nazwa'] + ' ' + record['zawartosc'],
-                        record['id']]);
+            medicine.push([`${record['nazwa']} ${record['zawartosc']}`, record['id']]);
         });
-        console.log(newArr);
-        response.render('check.pug', {Leki: newArr});
+
+        response.render('check.pug', {medicine: medicine});
     });
 });
 
-app.post("/showGraph", (request, response) => {
-    console.log(request.body);
-    console.log("arr" + Array.from(request.body));
-    const idMedicine = request.body.showGraph;
-    // Array.from(request.body).forEach(element => {
-    //     idMedicine.push(element[''])
-    // });
-    console.log(idMedicine);
+app.post('/prices', (request, response) => {
+    const medicineIds = request.body.showGraph;
+    const commaIds = medicineIds.map(element => element).join(',');
+    const getPrices = `SELECT lek.nazwa, lek.zawartosc, cena.dzien, cena.wartosc 
+                        FROM Lek lek JOIN Cena cena ON lek.id = cena.lek
+                        WHERE lek.id IN ( ${commaIds} )`;
 
-    let lor_in_list = idMedicine.map(function (a) { return a; }).join(",");
-    let sql_query = `SELECT lek.nazwa, lek.zawartosc, cena.dzien, cena.wartosc 
-                    FROM Lek lek JOIN Cena cena ON lek.id = cena.lek
-                    WHERE lek.id IN ( `+ lor_in_list + `)`;
-    console.log('query: ' + sql_query);
-
-    db.query(sql_query, (err, result) => {
+    db.query(getPrices, (err, result) => {
         if (err) {
-            console.error('Now you fucked up with checkbox id.');
+            console.error('Prices query failed.');
             throw err;
         }
 
-        console.log(result);
-        var newArr = []
-        //record['dzien'].toString().slice(0, 15)
+        const prices = [];
+        // record['dzien'].toString().slice(0, 15) - use to parse date format, remove if not needed
         result.forEach(record => {
-            newArr.push([record['nazwa'] + record['zawartosc'],
-                        record['dzien'],
-                        record['wartosc']]);
+            prices.push([`${record['nazwa']} ${record['zawartosc']}`, record['dzien'], record['wartosc']]);
         });
-        console.log(newArr);
-        response.render('graph.pug', {leki: newArr});
+
+        response.render('graph.pug', {prices: prices});
     })
-//    response
+
+//    TODO: response
 });
-// app.get('/', (req, res) => {
-//     const getSubstances = 'SELECT nazwa FROM Substancja';
-
-//     db.query(getSubstances, (err, result) => {
-//         if (err) {
-//             console.error('Query failed.');
-//             throw err;
-//         }
-
-
-//         res.render('example.pug', {medicine: result});
-//     });
-// });

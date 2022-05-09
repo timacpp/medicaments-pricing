@@ -1,13 +1,10 @@
 doctype html
-h3 Choose Your Skill
+h3 Wybierz leki
 div
-    form(action='/showGraph' method="post")
-        label(for='showGraph') 
-        //- ul Leki obok powyższego label
+    form(action='/prices' method='post')
+        label(for='prices') 
         input(type='submit', value='Submit')
-        each medicine in Leki
-            //-         li = input(type='checkbox' name=medicine[0] value=medicine[1])
-            //- input.checkbox-input(type='checkbox', name=medicine[0], value=medicine[1])
+        each drug in medicine
             div.checkox-inline
-            input.checkbox-input(type='checkbox' name='showGraph' value=medicine[1])
-            label(for='showGraph')=medicine[0]
+            input.checkbox-input(type='checkbox' name='graph' value=drug[1])
+            label(for='graph')=drug[0]
