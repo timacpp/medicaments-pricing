@@ -71,14 +71,34 @@ app.get('/', (req, res) => {
 
 app.post("/checkMedicine" , (request, response) => {
     console.log(request.body.dropDown);
-    response.render('check.pug',{
-        skill: request.body.dropDown
+
+    const substanceId = request.body.dropDown;
+    const getMedicines = `SELECT lek.nazwa, lek.zawartosc, lek.id
+            FROM Lek lek
+            LEFT JOIN Substancja sub
+            ON sub.nazwa = ? `;
+
+    // response.render('check.pug',{
+    //     skill: request.body.dropDown
+    // });
+    db.query(getMedicines, substanceId, (err, result) => {
+        if (err) {
+            console.error('Now you fucked up with substance id.');
+            throw err;
+        }
+
+        var newArr = []
+        result.forEach(record => {
+            newArr.push([record['nazwa'] + ' ' + record['zawartosc'],
+                        record['id']]);
+        });
+
+        response.render('check.pug', {Leki: newArr});
     });
-    //  var selected = document.getElementById('dropDown');
-    //  var selId = selected.options[selected.selectedIndex].value;
-    //  response.render('check.pug', {
-    //      skill: selId
-    //  })
+});
+
+app.post("/showGraph", (request, response) => {
+//    response
 });
 // app.get('/', (req, res) => {
 //     const getSubstances = 'SELECT nazwa FROM Substancja';
