@@ -76,7 +76,7 @@ app.post("/checkMedicine" , (request, response) => {
     const getMedicines = `SELECT lek.nazwa, lek.zawartosc, lek.id
             FROM Lek lek
             LEFT JOIN Substancja sub
-            ON sub.nazwa = ? `;
+            ON sub.id = ? `;
 
     // response.render('check.pug',{
     //     skill: request.body.dropDown
@@ -92,7 +92,7 @@ app.post("/checkMedicine" , (request, response) => {
             newArr.push([record['nazwa'] + ' ' + record['zawartosc'],
                         record['id']]);
         });
-
+//        console.log(newArr);
         response.render('check.pug', {Leki: newArr});
     });
 });
