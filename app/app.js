@@ -2,7 +2,6 @@ const express = require('express');
 const req = require('express/lib/request');
 const connection = require('./database/connection');
 const bp = require('body-parser');
-const res = require('express/lib/response');
 
 const port = 8080;
 const app = express();
