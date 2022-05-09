@@ -72,11 +72,12 @@ app.get('/', (req, res) => {
 app.post("/checkMedicine" , (request, response) => {
     console.log(request.body.dropDown);
 
-    const substanceId = request.body.dropDown;
+    const substanceId = parseInt(request.body.dropDown);
+    console.log(typeof substanceId);
     const getMedicines = `SELECT lek.nazwa, lek.zawartosc, lek.id
             FROM Lek lek
-            LEFT JOIN Substancja sub
-            ON sub.id = ? `;
+            JOIN Substancja sub
+            ON lek.substancja = sub.id WHERE sub.id = ?`;
 
     // response.render('check.pug',{
     //     skill: request.body.dropDown
