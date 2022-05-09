@@ -20,7 +20,7 @@ app.listen(port, () => {
 });
 
 app.get('/substance', (request, ressponse) => {
-    const getSubstances = 'SELECT nazwa, id FROM Substancja';
+    const getSubstances = 'SELECT nazwa, id FROM Substancja ORDER BY nazwa-';
 
     db.query(getSubstances, (err, result) => {
         if (err) {
