@@ -120,7 +120,15 @@ app.post("/showGraph", (request, response) => {
         }
 
         console.log(result);
-        response.render('graph.pug', request.body.showGraph);
+        var newArr = []
+        //record['dzien'].toString().slice(0, 15)
+        result.forEach(record => {
+            newArr.push([record['nazwa'] + record['zawartosc'],
+                        record['dzien'],
+                        record['wartosc']]);
+        });
+        console.log(newArr);
+        response.render('graph.pug', {leki: newArr});
     })
 //    response
 });
