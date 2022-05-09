@@ -99,6 +99,8 @@ app.post("/checkMedicine" , (request, response) => {
 });
 
 app.post("/showGraph", (request, response) => {
+    console.log(request.body.showGraph);
+    response.render('graph.pug', request.body.showGraph);
 //    response
 });
 // app.get('/', (req, res) => {

@@ -4,10 +4,10 @@ div
     form(action='/showGraph' method="post")
         label(for='showGraph') Leki
         //- ul 
-    input(type='submit', value='Submit')
-    each medicine in Leki
-        //-         li = input(type='checkbox' name=medicine[0] value=medicine[1])
-        //- input.checkbox-input(type='checkbox', name=medicine[0], value=medicine[1])
-        div.checkox-inline
-        input.checkbox-input(type='checkbox', name=medicine[0], value=medicine[1])
-        label(for=medicine[0])=medicine[0]
+        input(type='submit', value='Submit')
+        each medicine in Leki
+            //-         li = input(type='checkbox' name=medicine[0] value=medicine[1])
+            //- input.checkbox-input(type='checkbox', name=medicine[0], value=medicine[1])
+            div.checkox-inline
+            input.checkbox-input(type='checkbox', name=medicine[0], value=medicine[1])
+            label(for=medicine[0])=medicine[0]
