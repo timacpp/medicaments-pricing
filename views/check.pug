@@ -2,9 +2,10 @@ doctype html
 h3 Wybierz leki
 div
     form(action='/prices' method='post')
-        label(for='prices') 
-        input(type='submit', value='Submit')
+        label(for='medicine') 
         each drug in medicine
             div.checkox-inline
-            input.checkbox-input(type='checkbox' name='graph' value=drug[1])
-            label(for='graph')=drug[0]
+            input.checkbox-input(type='checkbox' name='checkBox' value=drug[1])
+            label(for='option')=drug[0]
+        br
+        input(type='submit', value='Wybierz')

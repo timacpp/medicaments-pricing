@@ -2,6 +2,7 @@ const express = require('express');
 const req = require('express/lib/request');
 const connection = require('./database/connection');
 const bp = require('body-parser');
+const { strict } = require('jade/lib/doctypes');
 
 const port = 8080;
 const app = express();
@@ -64,8 +65,9 @@ app.post('/medicine' , (request, response) => {
 });
 
 app.post('/prices', (request, response) => {
-    const medicineIds = request.body.graph;
-    const commaIds = medicineIds.map(element => element).join(',');
+    const medicineIds = request.body.checkBox;
+    const commaIds = medicineIds instanceof Array ?
+                     medicineIds.map(element => element).join(',') : medicineIds;
     const getPrices = `SELECT lek.nazwa, lek.zawartosc, cena.dzien, cena.wartosc 
                          FROM Lek lek JOIN Cena cena ON lek.id = cena.lek
                          WHERE lek.id IN ( ${commaIds} )
@@ -85,8 +87,6 @@ app.post('/prices', (request, response) => {
 
         response.render('graph.pug', {prices: prices});
     })
-
-//    TODO: response
 });
 
 app.get('*', (request, response) => {
