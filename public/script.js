@@ -32,24 +32,23 @@ async function f() {
     }
 
     let drug_iter = 0;
-    for (let drug of drugs) {
-        let dates_iter = 0;
-        for (let x_member of x) {
-            if (x_member[0] === drug) {
-                while (!(dates[dates_iter] === x_member[1])) {
+    for (let drug of drugs) {                                           //Chcę dla każdego leku stworzyć tablicę cen w kolejnych datach. Jeżeli w danej dacie dany lek nie ma ceny, to musi tam być null.
+        let dates_iter = 0;                                             //Iterator dat
+        for (let x_member of x) {                                       //x to tablica wyników zapytań (dla każdego x_member x_member[0] to nazwa leku, x_member[1] to data, a x_member[2] to cena)
+            if (x_member[0] === drug) {                                 //Sprawdzam czy wynik aktualnie rozpatrywanego rekordu dotyczy aktualnie handlowanego leku
+                while (x_member[1] != dates[dates_iter]) {              //Jeżeli data w danym rekordzie nie jest równa kolejnej dacie reprezentowanej przez data[data_iter], to przesuwaj data_iter aż będzie taka sama
+                    values[drug_iter].push(null);                       //uzupełnij nullami brakujące cenny
                     dates_iter++;
-                    values[drug_iter].push(null);
                 }
-                values[drug_iter].push(null);
-                dates_iter++;
+                values[drug_iter].push(x_member[2]);                    //dodaj kolejną cenę do values
+                dates_iter++;                                           //przejdź do następnej daty
             }
         }
         drug_iter++;
     }
-
-    console.log(values);
-
-    const ctx = document.getElementById('myChart').getContext('2d');
+    console.log(values);                                                //values nie jest odpowiednio wypełniane nullami, z moich obserwacji pętla while z 39 linii nigdy się nie wywołuje, ale nie wiem dlaczego
+    const Chart = require("chart.js")
+    const ctx = document.getElementById('myChart');
     const myChart = new Chart(ctx, {
         type: 'line',
         data: {
