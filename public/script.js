@@ -1,5 +1,3 @@
-// const Chart = require('chart.js');
-
 async function buildChart() {
     const selectedIds = [];
 
@@ -56,11 +54,11 @@ async function buildChart() {
 
     console.log(prices);
     const ctx = document.getElementById('myChart');
-    // const myChart = new Chart(ctx, {
-    //     type: 'line',
-    //     data: {
-    //         datasets: values,
-    //         labels: dates
-    //     }
-    // });
+    const myChart = new Chart(ctx, {
+         type: 'line',
+         data: {
+             datasets: prices,
+             labels: dates
+         }
+     });
 }

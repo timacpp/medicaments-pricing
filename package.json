@@ -22,7 +22,6 @@
     "nodemon": "^2.0.16"
   },
   "dependencies": {
-    "chart.js": "^3.7.1",
     "csvtojson": "^2.0.10",
     "dotenv": "^16.0.0",
     "eslint": "^8.15.0",
