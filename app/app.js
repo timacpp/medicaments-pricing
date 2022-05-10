@@ -89,7 +89,9 @@ app.post('/prices', (request, response) => {
 
 app.use('/',express.static('public'));
 
-app.get('/', (request, response) => {
+app.get('*', (request, response) => {
     console.log('The paths does not exist, redirecting to main page.');
     response.redirect('/substance');
 })
+
+module.exports = {port};
