@@ -30,7 +30,7 @@ async function buildChart() {
 
     for (const record of records) {
         if(drugs[record[0]] === undefined) drugs[record[0]] = {data: []};
-        drugs[record[0]].data.push({date: record[1], price: record[2]});
+        drugs[record[0]].data.push({date: record[1], price: record[2]/100});
 
         const splitDate = record[1].split("/");
         const intDate = parseInt(splitDate[0]) + parseInt(splitDate[1]) * 100;
@@ -48,8 +48,6 @@ async function buildChart() {
     range *= 12;
     range += maxMonth-minMonth+2;
     
-    let drugCounter = 0;
-
     for (const [key, drug] of Object.entries(drugs)) {
         let data = new Array(parseInt(range/2));
         data.fill(null);
@@ -74,11 +72,23 @@ async function buildChart() {
             //backgroundColor: ''
         }
         datasets.push(set);
-    }    
+    }
+
     const labels = new Array(parseInt(range/2));
-    labels.fill("DUPA");
-    labels[0]="paweł";
-    labels[labels.length-1]="benis";
+    labels.fill("");
+
+    let labelYear = parseInt(minDate/100);
+    let labelMonth = parseInt(minDate%100);
+
+    for (let labelMember in labels) {
+        labels[labelMember] = labelMonth + "/" + labelYear;
+        labelMonth+=2;
+        if (labelMonth > 12) {
+            labelMonth -= 12;
+            labelYear++;
+        }
+    }
+
     const ctx = document.getElementById('myChart').getContext('2d');
     window.lineChart = new Chart(ctx, {
         type: 'line',
@@ -92,7 +102,7 @@ async function buildChart() {
             stacked: false,
             title:{
                 display: true,
-                text:'Chart.js Line Chart - Multi Axis'
+                text:'Ceny'
             }
         }
     });
