@@ -1,6 +1,6 @@
 async function buildChart() {
     const selectedIds = [];
-
+    if(window.lineChart) window.lineChart.destroy();
     for (const checkbox of document.getElementsByTagName('input')) {
         if (checkbox.checked) {
             selectedIds.push(checkbox.getAttribute('data-id'));
@@ -53,7 +53,7 @@ async function buildChart() {
     let drugCounter = 0;
 
     for (const [key, drug] of Object.entries(drugs)) {
-        data = new Array(parseInt(range/2));
+        let data = new Array(parseInt(range/2));
         data.fill(null);
         
         for (const entry of drug.data) {
@@ -64,7 +64,7 @@ async function buildChart() {
             index *= 12;
             index += parseInt(splitDate[0]);
             index -= minMonth;
-            data[index] = entry.price;
+            data[parseInt(index/2)] = entry.price;
         }
         
 
@@ -72,19 +72,19 @@ async function buildChart() {
             label: key,
             fill: false,
             data: data, 
-            yAxisID: "y-axis-"+drugCounter++,
             borderColor: '#808080',
             backgroundColor: '#808080'
         }
         datasets.push(set);
     }    
-    console.log(datasets);
 
-    const ctx = document.getElementById('myChart');
-    const lineChart = new Chart(ctx, {
+    const labels = new Array(parseInt(range/2));
+    labels.fill("DUPA");
+    const ctx = document.getElementById('myChart').getContext('2d');
+    window.lineChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: [],
+            labels: labels,
             datasets: datasets
         },
         options: {
@@ -97,4 +97,38 @@ async function buildChart() {
             }
         }
     });
+
+
+
 }
+
+// const labels = [
+//     'January',
+//     'February',
+//     'March',
+//     'April',
+//     'May',
+//     'June',
+//   ];
+
+//   const data = {
+//     labels: labels,
+//     datasets: [{
+//       label: 'My First dataset',
+//       backgroundColor: 'rgb(255, 99, 132)',
+//       borderColor: 'rgb(255, 99, 132)',
+//       data: [0, 10, 5, 2, 20, 30, 45],
+//     }]
+//   };
+
+//   const config = {
+//     type: 'line',
+//     data: data,
+//     options: {}
+//   };
+//   window.onload = ()=>{
+//     const myChart = new Chart(
+//         document.getElementById('myChart'),
+//         config
+//     );
+//   }
