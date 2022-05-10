@@ -17,5 +17,26 @@ async function f() {
     });
     let x = await response.json();
     console.log(x);
+    let dates = [];
+    let values = [];
+    for (let x_member of x) {
+
+    }
     return x;
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: []
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 }
