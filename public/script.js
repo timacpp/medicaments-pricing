@@ -106,7 +106,4 @@ async function buildChart() {
             }
         }
     });
-
-
-
 }

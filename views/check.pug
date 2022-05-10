@@ -7,7 +7,7 @@ div
         label(for="checkbox-"+drug[1])=drug[0]
     br
     button(onclick="buildChart()") Wybierz
-div
-    canvas(id="myChart" width="800" height="450")
+div(style="max-width: 1500px")
+    canvas(id="myChart")
 script(src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js")
 script(src="/script.js")
