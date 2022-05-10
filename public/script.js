@@ -17,7 +17,6 @@ async function buildChart() {
 
     // Represent data as tuples (drug, date, price)
     const records = await response.json();
-    const dates = [];
     const drugs = [];
     const prices = [];
     const datasets = [];
@@ -47,8 +46,7 @@ async function buildChart() {
     var range = 0;
     range += maxYear-minYear;
     range *= 12;
-    range += maxMonth-minMonth;
-
+    range += maxMonth-minMonth+2;
     
     let drugCounter = 0;
 
@@ -67,19 +65,20 @@ async function buildChart() {
             data[parseInt(index/2)] = entry.price;
         }
         
-
+        const color = Math.random()*360;
         const set = {
             label: key,
             fill: false,
             data: data, 
-            borderColor: '#808080',
-            backgroundColor: '#808080'
+            borderColor: 'hsl('+color+',100%,40%)',
+            //backgroundColor: ''
         }
         datasets.push(set);
     }    
-
     const labels = new Array(parseInt(range/2));
     labels.fill("DUPA");
+    labels[0]="paweł";
+    labels[labels.length-1]="benis";
     const ctx = document.getElementById('myChart').getContext('2d');
     window.lineChart = new Chart(ctx, {
         type: 'line',
@@ -101,34 +100,3 @@ async function buildChart() {
 
 
 }
-
-// const labels = [
-//     'January',
-//     'February',
-//     'March',
-//     'April',
-//     'May',
-//     'June',
-//   ];
-
-//   const data = {
-//     labels: labels,
-//     datasets: [{
-//       label: 'My First dataset',
-//       backgroundColor: 'rgb(255, 99, 132)',
-//       borderColor: 'rgb(255, 99, 132)',
-//       data: [0, 10, 5, 2, 20, 30, 45],
-//     }]
-//   };
-
-//   const config = {
-//     type: 'line',
-//     data: data,
-//     options: {}
-//   };
-//   window.onload = ()=>{
-//     const myChart = new Chart(
-//         document.getElementById('myChart'),
-//         config
-//     );
-//   }
