@@ -6,23 +6,22 @@ async function f() {
     }
     console.log(arr);
     const response = await fetch("http://localhost:8080/prices", {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
+        method: 'POST',
+        mode: 'cors',
         headers: {
             'Content-Type': 'application/json'
-            // 'Content-Type': 'application/x-www-form-urlencoded',
         },
-        credentials: 'same-origin', // include, *same-origin, omit
-        body: JSON.stringify(arr) // body data type must match "Content-Type" header
+        credentials: 'same-origin',
+        body: JSON.stringify(arr)
     });
-    let x = await response.json();
-    console.log(x);
-    let dates = [];
+    let x = await response.json(); //x receives records of all selected drugs
+    console.log(x);                 //debug
+    return x
+    let dates = [];             
     let values = [];
     for (let x_member of x) {
 
     }
-    return x;
 
     const ctx = document.getElementById('myChart').getContext('2d');
     const myChart = new Chart(ctx, {
