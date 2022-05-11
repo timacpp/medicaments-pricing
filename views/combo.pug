@@ -3,10 +3,9 @@ head
     title Leki
     link(rel='stylesheet' href='/stylesheets.css')
 h3 Wybierz substancję aktywną
-div
+div(id="options")
     form(action='/medicine' method='post')
-        label(for='substanceOpt') Substancja 
-        select(name='dropDown', id='')
+        select(name='dropDown', id='', style="font-size:17px")
             each substance in substances
                 option(value=substance[1]) #{substance[0]} 
-            input(type='submit', value='Wybierz')
+            input(type='submit', value='Wybierz',style="font-size:17px")
