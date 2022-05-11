@@ -63,13 +63,13 @@ app.post('/medicine' , (request, response) => {
 });
 
 app.post('/prices', (request, response) => {
-    const medicineIds = request.body.checkBox;
+    const medicineIds = request.body;
     const commaIds = medicineIds instanceof Array ?
                      medicineIds.map(element => element).join(',') : medicineIds;
     const getPrices = `SELECT lek.nazwa, lek.zawartosc, DATE_FORMAT(cena.dzien,'%m/%y') AS dzien, cena.wartosc 
                          FROM Lek lek JOIN Cena cena ON lek.id = cena.lek
                          WHERE lek.id IN ( ${commaIds} )
-                       ORDER BY cena.dzien`;
+                       ORDER BY lek.nazwa, lek.zawartosc, cena.dzien`;
 
     db.query(getPrices, (err, result) => {
         if (err) {
@@ -82,11 +82,15 @@ app.post('/prices', (request, response) => {
             prices.push([`${record['nazwa']} ${record['zawartosc']}`, record['dzien'], record['wartosc']]);
         });
 
-        response.render('graph.pug', {prices: prices});
+        response.send(JSON.stringify(prices));
     })
 });
+
+app.use('/',express.static('public'));
 
 app.get('*', (request, response) => {
     console.log('The paths does not exist, redirecting to main page.');
     response.redirect('/substance');
 })
+
+module.exports = {port};
