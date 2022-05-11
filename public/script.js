@@ -40,7 +40,7 @@ async function buildChart() {
         if(drugs[record[0]] === undefined) drugs[record[0]] = {data: []};
         const priceStr = record[2].toString();
         const pricePln = priceStr.substr(0, priceStr.length - 2) + '.' + priceStr.substr(priceStr.length - 2, 2);
-        drugs[record[0]].data.push({date: record[1], price: record[2]});
+        drugs[record[0]].data.push({date: record[1], price: pricePln});
 
         const splitDate = record[1].split("/");
         const intDate = parseInt(splitDate[0]) + parseInt(splitDate[1]) * 100;
@@ -112,6 +112,13 @@ async function buildChart() {
             title:{
                 display: true,
                 text:'Ceny'
+            }
+        },
+        tooltips: {
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    return tooltipItem.yLabel.toFixed(2);
+                }
             }
         }
     });
