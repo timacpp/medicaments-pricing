@@ -1,10 +1,18 @@
+function getCheckboxes() {
+   return document.getElementsByTagName('input'); 
+}
+
 async function buildChart() {
     const selectedIds = [];
     if(window.lineChart) window.lineChart.destroy();
-    for (const checkbox of document.getElementsByTagName('input')) {
+    for (const checkbox of getCheckboxes()) {
         if (checkbox.checked) {
             selectedIds.push(checkbox.getAttribute('data-id'));
         }
+    }
+
+    if (selectedIds.length == 0) {
+        return;
     }
 
     const response = await fetch(`http://localhost:8080/prices`, {
@@ -31,10 +39,8 @@ async function buildChart() {
     for (const record of records) {
         if(drugs[record[0]] === undefined) drugs[record[0]] = {data: []};
         const priceStr = record[2].toString();
-        const pricePln = priceStr.substr(0, priceStr.length - 2) + '.' + priceStr.substr(priceStr.length - 2, 2)
-        console.log(pricePln);
-        console.log(priceStr);
-        drugs[record[0]].data.push({date: record[1], price: pricePln});
+        const pricePln = priceStr.substr(0, priceStr.length - 2) + '.' + priceStr.substr(priceStr.length - 2, 2);
+        drugs[record[0]].data.push({date: record[1], price: record[2]});
 
         const splitDate = record[1].split("/");
         const intDate = parseInt(splitDate[0]) + parseInt(splitDate[1]) * 100;
@@ -73,7 +79,6 @@ async function buildChart() {
             fill: false,
             data: data, 
             borderColor: 'hsl('+color+',100%,40%)',
-            //backgroundColor: ''
         }
         datasets.push(set);
     }
@@ -110,4 +115,23 @@ async function buildChart() {
             }
         }
     });
+}
+
+
+function selectAll() {
+    for (const checkbox of getCheckboxes()) {
+        checkbox.checked = true;
+    }
+}
+
+function unselectAll() {
+    for (const checkbox of getCheckboxes()) {
+        checkbox.checked = false;
+    }
+}
+
+function reverseSelect() {
+    for (const checkbox of getCheckboxes()) {
+        checkbox.checked ^= 1;
+    }
 }

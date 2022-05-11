@@ -1,13 +1,21 @@
 doctype html
+head 
+    title Leki
+    link(rel='stylesheet' href='/stylesheets.css')
 h3 Wybierz leki
-div
-    each drug in medicine
-        div.checkox-inline
-        input.checkbox-input(type='checkbox' data-id=drug[1] name="checkbox-"+drug[1] id="checkbox-"+drug[1])
-        label(for="checkbox-"+drug[1])=drug[0]
-    br
-    button(onclick="buildChart()") Wybierz
-div(style="max-width: 1500px")
-    canvas(id="myChart")
-script(src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js")
-script(src="/script.js")
+div(id='plotting')
+    div(id='drugs')
+        each drug in medicine
+            div.checkox-inline
+            input.checkbox-input(type='checkbox' data-id=drug[1] name="checkbox-"+drug[1] id="checkbox-"+drug[1])
+            label(for="checkbox-"+drug[1])=drug[0]
+        br
+        button(onclick="unselectAll()") Odznacz wszystko 
+        button(onclick="selectAll()") Zaznacz wszystko
+        button(onclick="reverseSelect()") Odwróć zaznaczanie
+        button(onclick="buildChart()") Kreśl
+    div(id='plot')
+        div(style="max-width: 1000px")
+            canvas(id="myChart")
+        script(src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js")
+        script(src="/script.js")
