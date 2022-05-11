@@ -7,7 +7,7 @@ async function buildChart() {
         }
     }
 
-    const response = await fetch(`http://localhost:${8080}/prices`, {
+    const response = await fetch(`http://localhost:8080/prices`, {
         method: 'POST',
         mode: 'cors',
         headers: {'Content-Type': 'application/json'},
@@ -30,7 +30,11 @@ async function buildChart() {
 
     for (const record of records) {
         if(drugs[record[0]] === undefined) drugs[record[0]] = {data: []};
-        drugs[record[0]].data.push({date: record[1], price: record[2]/100});
+        const priceStr = record[2].toString();
+        const pricePln = priceStr.substr(0, priceStr.length - 2) + '.' + priceStr.substr(priceStr.length - 2, 2)
+        console.log(pricePln);
+        console.log(priceStr);
+        drugs[record[0]].data.push({date: record[1], price: pricePln});
 
         const splitDate = record[1].split("/");
         const intDate = parseInt(splitDate[0]) + parseInt(splitDate[1]) * 100;
