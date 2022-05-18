@@ -3,8 +3,9 @@ function getCheckboxes() {
 }
 
 async function buildChart() {
+    const buildChartButton = document.getElementById("btn-build-chart");
+    buildChartButton.disabled = true;
     const selectedIds = [];
-    if(window.lineChart) window.lineChart.destroy();
     for (const checkbox of getCheckboxes()) {
         if (checkbox.checked) {
             selectedIds.push(checkbox.getAttribute('data-id'));
@@ -97,8 +98,8 @@ async function buildChart() {
             labelYear++;
         }
     }
-
     const ctx = document.getElementById('myChart').getContext('2d');
+    if(window.lineChart) window.lineChart.destroy();
     window.lineChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -122,6 +123,7 @@ async function buildChart() {
             }
         }
     });
+    buildChartButton.disabled = false;
 }
 
 
