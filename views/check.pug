@@ -10,10 +10,10 @@ div(id='plotting')
             input.checkbox-input(type='checkbox' data-id=drug[1] name="checkbox-"+drug[1] id="checkbox-"+drug[1])
             label(for="checkbox-"+drug[1])=drug[0]
         br
-        button(onclick="unselectAll()" style="font-size:17px") Odznacz wszystko 
-        button(onclick="selectAll()" style="font-size:17px") Zaznacz wszystko
-        button(onclick="reverseSelect()" style="font-size:17px") Odwróć
-        button(onclick="buildChart()" style="font-size:17px") Kreśl
+        button(id="btn-unselect-all" onclick="unselectAll()" style="font-size:17px") Odznacz wszystko 
+        button(id="btn-select-all" onclick="selectAll()" style="font-size:17px") Zaznacz wszystko
+        button(id="btn-reverse-selection" onclick="reverseSelect()" style="font-size:17px") Odwróć
+        button(id="btn-build-chart" onclick="buildChart()" style="font-size:17px") Kreśl
     div(style="max-width: 500; width: 60% !important;")
         canvas(id="myChart")
     script(src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js")
