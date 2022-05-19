@@ -13,6 +13,7 @@ async function buildChart() {
     }
 
     if (selectedIds.length == 0) {
+        buildChartButton.disabled = false;
         return;
     }
 
