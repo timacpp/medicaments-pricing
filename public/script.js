@@ -2,6 +2,10 @@ function getCheckboxes() {
    return document.getElementsByTagName('input'); 
 }
 
+function resetZoomChart() {
+    window.lineChart.resetZoom();
+}
+
 async function buildChart() {
     const buildChartButton = document.getElementById("btn-build-chart");
     buildChartButton.disabled = true;
@@ -108,6 +112,22 @@ async function buildChart() {
             datasets: datasets
         },
         options: {
+            plugins: {
+                zoom: {
+                    zoom: {
+                        wheel: {
+                            enabled: true
+                        },
+                        pinch: {
+                            enabled: true
+                        },
+                        mode: 'xy'
+                    },
+                    pan: {
+                        enabled: true
+                    }
+                }
+            },
             responsive: true,
             hoverMode: 'index',
             stacked: false,
