@@ -15,9 +15,12 @@ div(id='plotting')
         button(id="btn-reverse-selection" onclick="reverseSelect()" style="font-size:17px") Odwróć
         button(id="btn-build-chart" onclick="buildChart()" style="font-size:17px") Kreśl
         button(id="btn-reset-zoom" onclick="resetZoomChart()" style="font-size:17px") Zresetuj Zoom
+        button(id="btn-get-pdf" onclick="getPDF()" style="font-size:17px") Zapisz PDF
     div(style="max-width: 500; width: 60% !important;")
         canvas(id="myChart")
     script(src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.1/chartjs-plugin-zoom.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js")
     script(src="/script.js")

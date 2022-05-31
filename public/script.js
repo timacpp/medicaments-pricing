@@ -6,6 +6,25 @@ function resetZoomChart() {
     window.lineChart.resetZoom();
 }
 
+function getPDF() {
+    const chartCanvas = document.getElementById('myChart');
+    const chartCanvasImg = chartCanvas.toDataURL('image/jpeg', 1.0);
+    let chartPDF = new jsPDF('landscape');
+    chartPDF.setFontSize(20);
+    chartPDF.addImage(chartCanvasImg, 'JPEG', 15, 15, 280, 150);
+    chartPDF.save('cenylekow.pdf');
+}
+
+const bgColor = {
+    id: 'bgColor',
+    beforeDraw: (chart) => {
+        const {ctx, width, height} = chart;
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, width, height);
+        ctx.restore();
+    }
+}
+
 async function buildChart() {
     const buildChartButton = document.getElementById("btn-build-chart");
     buildChartButton.disabled = true;
@@ -111,6 +130,7 @@ async function buildChart() {
             labels: labels,
             datasets: datasets
         },
+        plugins: [bgColor],
         options: {
             plugins: {
                 zoom: {
