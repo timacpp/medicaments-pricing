@@ -3,8 +3,17 @@ function getCheckboxes() {
 }
 
 function resetZoomChart() {
-    window.lineChart.resetZoom();
+    if (window.lineChart == null) {
+        console.log("IS NULL")
+        display_error("Wybierz co najmniej jeden lek i zaznacz ,,Kreśl\", by wyświetlić wykres i móc pobrać dane")
+    }
+    else {
+        clear_error();
+        window.lineChart.resetZoom();
+    }
 }
+
+var has_been_drawn = false;
 
 function getPDF() {
     const chartCanvas = document.getElementById('myChart');
@@ -25,6 +34,25 @@ const bgColor = {
     }
 }
 
+function display_error(mess) {
+    document.getElementById("invalid").innerHTML=mess;     
+    var not_checked = document.querySelectorAll('input.checkbox-input[type=checkbox]')
+    not_checked.forEach((element) => {element.style.outline = "2px solid red";})
+    document.getElementById("btn-build-chart").style.border="2px solid red";
+    document.getElementById("btn-build-chart").style.color="red";
+    document.getElementById("btn-build-chart").style.background="yellow";
+}
+
+function clear_error() {
+    document.getElementById("invalid").innerHTML="";
+    var not_checked = document.querySelectorAll('input.checkbox-input[type=checkbox]')
+    not_checked.forEach((element) => {element.style.outline = "";})
+
+    document.getElementById("btn-build-chart").style.border="";
+    document.getElementById("btn-build-chart").style.color="";
+    document.getElementById("btn-build-chart").style.background="";
+}
+
 async function buildChart() {
     console.log("entered");
     const buildChartButton = document.getElementById("btn-build-chart");
@@ -39,17 +67,23 @@ async function buildChart() {
     if (selectedIds.length == 0) {
         buildChartButton.disabled = false;
         console.log("JSON EMPTY")
-        document.getElementById("invalid").innerHTML="Wybierz co najmniej jeden lek, by wyświetlić wykres";
+        // document.getElementById("invalid").innerHTML="Wybierz co najmniej jeden lek, by wyświetlić wykres";
         
-        var not_checked = document.querySelectorAll('input.checkbox-input[type=checkbox]')
-        not_checked.forEach((element) => {element.style.outline = "2px solid red";})
+        // var not_checked = document.querySelectorAll('input.checkbox-input[type=checkbox]')
+        // not_checked.forEach((element) => {element.style.outline = "2px solid red";})
         
+        //var toDelete = document.getElementById('myChart').getContext("2d");
+        //toDelete.destroy();
+        display_error("Wybierz co najmniej jeden lek, by wyświetlić wykres");
+        
+
         return;
     }
     else {
-        document.getElementById("invalid").innerHTML="";
-        var not_checked = document.querySelectorAll('input.checkbox-input[type=checkbox]')
-        not_checked.forEach((element) => {element.style.outline = "";})
+        // document.getElementById("invalid").innerHTML="";
+        // var not_checked = document.querySelectorAll('input.checkbox-input[type=checkbox]')
+        // not_checked.forEach((element) => {element.style.outline = "";})
+        clear_error();
 
         console.log("bt")
     }
