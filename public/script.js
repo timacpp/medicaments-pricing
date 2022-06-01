@@ -40,7 +40,6 @@ async function buildChart() {
         buildChartButton.disabled = false;
         console.log("JSON EMPTY")
         document.getElementById("invalid").innerHTML="Wybierz co najmniej jeden lek, by wyświetlić wykres";
-        document.getElementById("error").style.padding="20 px";
         
         var not_checked = document.querySelectorAll('input.checkbox-input[type=checkbox]')
         not_checked.forEach((element) => {element.style.outline = "2px solid red";})
@@ -49,6 +48,9 @@ async function buildChart() {
     }
     else {
         document.getElementById("invalid").innerHTML="";
+        var not_checked = document.querySelectorAll('input.checkbox-input[type=checkbox]')
+        not_checked.forEach((element) => {element.style.outline = "";})
+
         console.log("bt")
     }
 
