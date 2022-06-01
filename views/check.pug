@@ -5,17 +5,17 @@ head
 h3 Wybierz leki
 div(id='plotting')
     div(id='drugs')
-        each drug in medicine
-            div.checkox-inline
-            input.checkbox-input(type='checkbox' data-id=drug[1] name="checkbox-"+drug[1] id="checkbox-"+drug[1])
-            label(for="checkbox-"+drug[1])=drug[0]
-        br
         button(id="btn-unselect-all" onclick="unselectAll()" style="font-size:17px") Odznacz wszystko 
         button(id="btn-select-all" onclick="selectAll()" style="font-size:17px") Zaznacz wszystko
         button(id="btn-reverse-selection" onclick="reverseSelect()" style="font-size:17px") Odwróć
         button(id="btn-build-chart" onclick="buildChart()" style="font-size:17px") Kreśl
         button(id="btn-reset-zoom" onclick="resetZoomChart()" style="font-size:17px") Zresetuj Zoom
         button(id="btn-get-pdf" onclick="getPDF()" style="font-size:17px") Zapisz PDF
+        each drug in medicine
+            div.checkox-inline
+            input.checkbox-input(type='checkbox' data-id=drug[1] name="checkbox-"+drug[1] id="checkbox-"+drug[1])
+            label(for="checkbox-"+drug[1])=drug[0]
+        br
     div(style="max-width: 500; width: 60% !important;")
         canvas(id="myChart")
     script(src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js")
