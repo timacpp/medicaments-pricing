@@ -3,13 +3,14 @@ head
     title Leki
     link(rel='stylesheet' href='/stylesheets.css')
 h3 Wybierz leki
+div(id="error" style="font-size:25px; text-align:center; color:red;")
+    span(class="error_mess" id="invalid")
 div(id='plotting')
     div(id='drugs')
         button(id="btn-unselect-all" onclick="unselectAll()" style="font-size:17px") Odznacz wszystko 
         button(id="btn-select-all" onclick="selectAll()" style="font-size:17px") Zaznacz wszystko
         button(id="btn-reverse-selection" onclick="reverseSelect()" style="font-size:17px") Odwróć zaznaczenie
         button(id="btn-build-chart" onclick="buildChart()" style="font-size:17px") Kreśl
-        span(class="error_mess" id="invalid" color="red")
         button(id="btn-reset-zoom" onclick="resetZoomChart()" style="font-size:17px") Zresetuj Zoom
         button(id="btn-get-pdf" onclick="getPDF()" style="font-size:17px") Zapisz PDF
         each drug in medicine
