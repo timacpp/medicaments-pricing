@@ -26,6 +26,7 @@ const bgColor = {
 }
 
 async function buildChart() {
+    console.log("entered");
     const buildChartButton = document.getElementById("btn-build-chart");
     buildChartButton.disabled = true;
     const selectedIds = [];
@@ -37,7 +38,13 @@ async function buildChart() {
 
     if (selectedIds.length == 0) {
         buildChartButton.disabled = false;
+        console.log("JSON EMPTY")
+        document.getElementById("invalid").innerHTML="Wybierz co najmniej jedno";
         return;
+    }
+    else {
+        document.getElementById("invalid").innerHTML="";
+        console.log("bt")
     }
 
     const response = await fetch(`http://localhost:8080/prices`, {
