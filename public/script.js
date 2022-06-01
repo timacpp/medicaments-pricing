@@ -3,9 +3,9 @@ function getCheckboxes() {
 }
 
 function resetZoomChart() {
-    if (window.lineChart == null) {
+    if (window.lineChart == null || has_been_drawn == false) {
         console.log("IS NULL")
-        display_error("Wybierz co najmniej jeden lek i zaznacz ,,Kreśl\", by wyświetlić wykres i móc pobrać dane")
+        display_error("Wybierz co najmniej jeden lek i zaznacz ,,Kreśl\", by wyświetlić wykres")
     }
     else {
         clear_error();
@@ -16,12 +16,20 @@ function resetZoomChart() {
 var has_been_drawn = false;
 
 function getPDF() {
-    const chartCanvas = document.getElementById('myChart');
-    const chartCanvasImg = chartCanvas.toDataURL('image/jpeg', 1.0);
-    let chartPDF = new jsPDF('landscape');
-    chartPDF.setFontSize(20);
-    chartPDF.addImage(chartCanvasImg, 'JPEG', 15, 15, 280, 150);
-    chartPDF.save('cenylekow.pdf');
+    if (window.lineChart == null || has_been_drawn == false) {
+        console.log("IS NULL")
+        display_error("Wybierz co najmniej jeden lek i zaznacz ,,Kreśl\", by wyświetlić wykres i móc pobrać dane")
+    }
+    else {
+        clear_error();
+
+        const chartCanvas = document.getElementById('myChart');
+        const chartCanvasImg = chartCanvas.toDataURL('image/jpeg', 1.0);
+        let chartPDF = new jsPDF('landscape');
+        chartPDF.setFontSize(20);
+        chartPDF.addImage(chartCanvasImg, 'JPEG', 15, 15, 280, 150);
+        chartPDF.save('cenylekow.pdf');
+    }
 }
 
 const bgColor = {
@@ -75,6 +83,7 @@ async function buildChart() {
         //var toDelete = document.getElementById('myChart').getContext("2d");
         //toDelete.destroy();
         display_error("Wybierz co najmniej jeden lek, by wyświetlić wykres");
+        has_been_drawn = false;
         
 
         return;
@@ -84,6 +93,7 @@ async function buildChart() {
         // var not_checked = document.querySelectorAll('input.checkbox-input[type=checkbox]')
         // not_checked.forEach((element) => {element.style.outline = "";})
         clear_error();
+        has_been_drawn = true;
 
         console.log("bt")
     }
