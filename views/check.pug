@@ -15,7 +15,7 @@ div(id='plotting')
         button(id="btn-get-pdf" onclick="getPDF()" style="font-size:17px") Zapisz PDF
         each drug in medicine
             div.checkox-inline
-            input.checkbox-input(type='checkbox' data-id=drug[1] name="checkbox-"+drug[1] id="checkbox-"+drug[1])
+            input.checkbox-input(type='checkbox' onclick="clear_error()" data-id=drug[1] name="checkbox-"+drug[1] id="checkbox-"+drug[1])
             label(for="checkbox-"+drug[1])=drug[0]
         br
     div(style="max-width: 500; width: 60% !important;")
