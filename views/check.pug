@@ -6,7 +6,7 @@ h3 Wybierz leki
 div(id="error" style="font-size:25px; text-align:center; color:red;")
     span(class="error_mess" id="invalid")
 div(id='plotting')
-    div(id='drugs')
+    div(id='drugs' style="OVERFLOW-Y:auto; overflow-x:auto; WIDTH:25%; HEIGHT:500px")
         button(id="btn-unselect-all" onclick="unselectAll()" style="font-size:17px") Odznacz wszystko 
         button(id="btn-select-all" onclick="selectAll()" style="font-size:17px") Zaznacz wszystko
         button(id="btn-reverse-selection" onclick="reverseSelect()" style="font-size:17px") Odwróć zaznaczenie

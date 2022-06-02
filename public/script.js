@@ -49,6 +49,7 @@ function display_error(mess) {
     document.getElementById("btn-build-chart").style.border="2px solid red";
     document.getElementById("btn-build-chart").style.color="red";
     document.getElementById("btn-build-chart").style.background="yellow";
+    if (window.lineChart) window.lineChart.destroy();
 }
 
 function clear_error() {
@@ -191,6 +192,9 @@ async function buildChart() {
         plugins: [bgColor],
         options: {
             plugins: {
+                legend: {
+                    display: false
+                },
                 zoom: {
                     zoom: {
                         wheel: {
