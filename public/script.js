@@ -203,6 +203,10 @@ async function buildChart() {
                         pinch: {
                             enabled: true
                         },
+                        drag: {
+                            enabled: true,
+                            modifierKey: 'ctrl'
+                        },
                         mode: 'xy'
                     },
                     pan: {
