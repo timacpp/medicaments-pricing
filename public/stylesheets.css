@@ -1,8 +1,3 @@
-html,body {    
-    height:100%;
-    margin: 0;
-}
-
 #drugs {
     font-size: 20px;
     overflow-y:auto; 
@@ -23,4 +18,9 @@ h3 {
 #plotting {
     display: flex;
     flex-direction: row;
+}
+
+#myChart {
+    display: flex;
+    justify-content: center;
 }
