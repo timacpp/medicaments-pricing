@@ -1,9 +1,23 @@
+html,body {    
+    height:100%;
+    margin: 0;
+}
+
 #drugs {
     font-size: 20px;
+    overflow-y:auto; 
+    overflow-x:auto; 
+    WIDTH:100%;
+    HEIGHT:80vh;
 }
 
 h3 {
     font-size: 30px;
+}
+
+#button-drugs {
+    display: flex;
+    flex-direction: column;
 }
 
 #plotting {
