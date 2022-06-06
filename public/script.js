@@ -2,7 +2,68 @@ function getCheckboxes() {
    return document.getElementsByTagName('input'); 
 }
 
+function resetZoomChart() {
+    if (window.lineChart == null || has_been_drawn == false) {
+        console.log("IS NULL")
+        display_error("Wybierz co najmniej jeden lek i zaznacz ,,Kreśl\", by wyświetlić wykres")
+    }
+    else {
+        clear_error();
+        window.lineChart.resetZoom();
+    }
+}
+
+var has_been_drawn = false;
+
+function getPDF() {
+    if (window.lineChart == null || has_been_drawn == false) {
+        console.log("IS NULL")
+        display_error("Wybierz co najmniej jeden lek i zaznacz ,,Kreśl\", by wyświetlić wykres i móc pobrać dane")
+    }
+    else {
+        clear_error();
+
+        const chartCanvas = document.getElementById('myChart');
+        const chartCanvasImg = chartCanvas.toDataURL('image/jpeg', 1.0);
+        let chartPDF = new jsPDF('landscape');
+        chartPDF.setFontSize(20);
+        chartPDF.addImage(chartCanvasImg, 'JPEG', 15, 15, 280, 150);
+        chartPDF.save('cenylekow.pdf');
+    }
+}
+
+const bgColor = {
+    id: 'bgColor',
+    beforeDraw: (chart) => {
+        const {ctx, width, height} = chart;
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, width, height);
+        ctx.restore();
+    }
+}
+
+function display_error(mess) {
+    document.getElementById("invalid").innerHTML=mess;     
+    var not_checked = document.querySelectorAll('input.checkbox-input[type=checkbox]')
+    not_checked.forEach((element) => {element.style.outline = "2px solid red";})
+    document.getElementById("btn-build-chart").style.border="2px solid red";
+    document.getElementById("btn-build-chart").style.color="red";
+    document.getElementById("btn-build-chart").style.background="yellow";
+    if (window.lineChart) window.lineChart.destroy();
+}
+
+function clear_error() {
+    document.getElementById("invalid").innerHTML="";
+    var not_checked = document.querySelectorAll('input.checkbox-input[type=checkbox]')
+    not_checked.forEach((element) => {element.style.outline = "";})
+
+    document.getElementById("btn-build-chart").style.border="";
+    document.getElementById("btn-build-chart").style.color="";
+    document.getElementById("btn-build-chart").style.background="";
+}
+
 async function buildChart() {
+    console.log("entered");
     const buildChartButton = document.getElementById("btn-build-chart");
     buildChartButton.disabled = true;
     const selectedIds = [];
@@ -14,7 +75,28 @@ async function buildChart() {
 
     if (selectedIds.length == 0) {
         buildChartButton.disabled = false;
+        console.log("JSON EMPTY")
+        // document.getElementById("invalid").innerHTML="Wybierz co najmniej jeden lek, by wyświetlić wykres";
+        
+        // var not_checked = document.querySelectorAll('input.checkbox-input[type=checkbox]')
+        // not_checked.forEach((element) => {element.style.outline = "2px solid red";})
+        
+        //var toDelete = document.getElementById('myChart').getContext("2d");
+        //toDelete.destroy();
+        display_error("Wybierz co najmniej jeden lek, by wyświetlić wykres");
+        has_been_drawn = false;
+        
+
         return;
+    }
+    else {
+        // document.getElementById("invalid").innerHTML="";
+        // var not_checked = document.querySelectorAll('input.checkbox-input[type=checkbox]')
+        // not_checked.forEach((element) => {element.style.outline = "";})
+        clear_error();
+        has_been_drawn = true;
+
+        console.log("bt")
     }
 
     const response = await fetch(`http://localhost:8080/prices`, {
@@ -107,7 +189,31 @@ async function buildChart() {
             labels: labels,
             datasets: datasets
         },
+        plugins: [bgColor],
         options: {
+            plugins: {
+                legend: {
+                    display: false
+                },
+                zoom: {
+                    zoom: {
+                        wheel: {
+                            enabled: true
+                        },
+                        pinch: {
+                            enabled: true
+                        },
+                        drag: {
+                            enabled: true,
+                            modifierKey: 'ctrl'
+                        },
+                        mode: 'xy'
+                    },
+                    pan: {
+                        enabled: true
+                    }
+                }
+            },
             responsive: true,
             hoverMode: 'index',
             stacked: false,

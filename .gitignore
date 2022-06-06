@@ -241,3 +241,6 @@ lerna-debug.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Temporary vim files
+.README.md.swp
