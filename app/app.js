@@ -2,7 +2,7 @@ const express = require('express');
 const connection = require('./database/connection');
 const bp = require('body-parser');
 
-const port = 8080;
+const port = 8000;
 const app = express();
 const db = connection.connection
 
