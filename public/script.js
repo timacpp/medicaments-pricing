@@ -81,7 +81,7 @@ async function buildChart() {
         has_been_drawn = true;
     }
 
-    const response = await fetch(`http://localhost:8080/prices`, {
+    const response = await fetch(`http://localhost:8000/prices`, {
         method: 'POST',
         mode: 'cors',
         headers: {'Content-Type': 'application/json'},
