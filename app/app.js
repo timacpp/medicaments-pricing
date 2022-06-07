@@ -66,12 +66,7 @@ app.post('/prices', (request, response) => {
     const medicineIds = request.body;
     const commaIds = medicineIds instanceof Array ?
                      medicineIds.map(element => element).join(',') : medicineIds
-    if (commaIds.length == 0) {
-        console.log("EMPTY");
-    }
-    else {
-        console.log("NOT");
-    }
+
     const getPrices = `SELECT lek.nazwa, lek.zawartosc, DATE_FORMAT(cena.dzien,'%m/%y') AS dzien, cena.wartosc 
                          FROM Lek lek JOIN Cena cena ON lek.id = cena.lek
                          WHERE lek.id IN ( ${commaIds} )
