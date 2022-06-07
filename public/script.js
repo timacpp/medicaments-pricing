@@ -124,6 +124,8 @@ async function buildChart() {
     range *= 12;
     range += maxMonth-minMonth+2;
     
+    const usedColors = new Set();
+
     for (const [key, drug] of Object.entries(drugs)) {
         let data = new Array(parseInt(range/2));
         data.fill(null);
@@ -138,15 +140,18 @@ async function buildChart() {
             index -= minMonth;
             data[parseInt(index/2)] = entry.price;
         }
-        
-        const color = Math.random()*360;
-        const set = {
+ 
+        let color = Math.random() * 360
+        while (usedColors.has(color)) {
+            color = Math.random() * 360;
+        }
+
+        datasets.push({
             label: key,
             fill: false,
-            data: data, 
+            data: data,
             borderColor: 'hsl('+color+',100%,40%)',
-        }
-        datasets.push(set);
+        });
     }
 
     const labels = new Array(parseInt(range/2));
