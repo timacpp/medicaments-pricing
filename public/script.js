@@ -4,7 +4,6 @@ function getCheckboxes() {
 
 function resetZoomChart() {
     if (window.lineChart == null || has_been_drawn == false) {
-        console.log("IS NULL")
         display_error("Wybierz co najmniej jeden lek i zaznacz ,,Kreśl\", by wyświetlić wykres")
     }
     else {
@@ -17,7 +16,6 @@ var has_been_drawn = false;
 
 function getPDF() {
     if (window.lineChart == null || has_been_drawn == false) {
-        console.log("IS NULL")
         display_error("Wybierz co najmniej jeden lek i zaznacz ,,Kreśl\", by wyświetlić wykres i móc pobrać dane")
     }
     else {
@@ -63,7 +61,6 @@ function clear_error() {
 }
 
 async function buildChart() {
-    console.log("entered");
     const buildChartButton = document.getElementById("btn-build-chart");
     buildChartButton.disabled = true;
     const selectedIds = [];
@@ -75,28 +72,13 @@ async function buildChart() {
 
     if (selectedIds.length == 0) {
         buildChartButton.disabled = false;
-        console.log("JSON EMPTY")
-        // document.getElementById("invalid").innerHTML="Wybierz co najmniej jeden lek, by wyświetlić wykres";
-        
-        // var not_checked = document.querySelectorAll('input.checkbox-input[type=checkbox]')
-        // not_checked.forEach((element) => {element.style.outline = "2px solid red";})
-        
-        //var toDelete = document.getElementById('myChart').getContext("2d");
-        //toDelete.destroy();
         display_error("Wybierz co najmniej jeden lek, by wyświetlić wykres");
         has_been_drawn = false;
-        
-
         return;
     }
     else {
-        // document.getElementById("invalid").innerHTML="";
-        // var not_checked = document.querySelectorAll('input.checkbox-input[type=checkbox]')
-        // not_checked.forEach((element) => {element.style.outline = "";})
         clear_error();
         has_been_drawn = true;
-
-        console.log("bt")
     }
 
     const response = await fetch(`http://localhost:8080/prices`, {
@@ -193,7 +175,10 @@ async function buildChart() {
         options: {
             plugins: {
                 legend: {
-                    display: false
+                    display: true,
+                    poisiton: 'left',
+                    fullSize: true,
+                    reverse: true
                 },
                 zoom: {
                     zoom: {
