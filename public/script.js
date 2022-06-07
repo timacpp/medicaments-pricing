@@ -173,12 +173,18 @@ async function buildChart() {
         },
         plugins: [bgColor],
         options: {
+            responsive: true,
+            maintainAspectRatio: true,
             plugins: {
                 legend: {
                     display: true,
-                    poisiton: 'left',
-                    fullSize: true,
-                    reverse: true
+                    position: 'bottom',
+                    labels: {
+                        textAlign: 'left',
+                        font: {
+                            size: 9
+                        }
+                    }
                 },
                 zoom: {
                     zoom: {
